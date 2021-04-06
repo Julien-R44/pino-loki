@@ -22,7 +22,6 @@ function main () {
           applicationTag: options.application || 'App',
           size: options.batch || 1
         }
-        console.log(options)
         const writeStream = await pinoLoki.createWriteStream(config)
         process.stdin.pipe(writeStream)
 
