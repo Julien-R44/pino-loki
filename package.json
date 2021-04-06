@@ -1,8 +1,8 @@
 {
   "name": "pino-loki",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
+  "version": "1.0.2",
+  "description": "A transport for pino that sends messages to Loki",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,11 +10,20 @@
     "type": "git",
     "url": "git+https://github.com/Julien-R44/pino-loki.git"
   },
-  "author": "",
+  "author": "Julien-R44",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/Julien-R44/pino-loki/issues"
   },
+  "bin": {
+    "pino-loki": "src/cli.js"
+  },
+  "keywords": [
+    "pino",
+    "pino-transport",
+    "loki",
+    "logging"
+  ],
   "homepage": "https://github.com/Julien-R44/pino-loki#readme",
   "devDependencies": {
     "eslint": "^7.23.0",
