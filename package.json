@@ -1,0 +1,36 @@
+{
+  "name": "pino-loki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Julien-R44/pino-loki.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Julien-R44/pino-loki/issues"
+  },
+  "homepage": "https://github.com/Julien-R44/pino-loki#readme",
+  "devDependencies": {
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "pino": "^6.11.2",
+    "prettier": "^2.2.1",
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "batch2": "^2.0.0",
+    "fast-json-parse": "^1.0.3",
+    "pumpify": "^2.0.1",
+    "split2": "^3.2.2",
+    "stream": "0.0.2",
+    "through2": "^4.0.2"
+  }
+}
