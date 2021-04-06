@@ -1,6 +1,6 @@
 {
   "name": "pino-loki",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A transport for pino that sends messages to Loki",
   "main": "src/index.js",
   "scripts": {
@@ -36,6 +36,7 @@
   "dependencies": {
     "axios": "^0.21.1",
     "batch2": "^2.0.0",
+    "commander": "^7.2.0",
     "fast-json-parse": "^1.0.3",
     "pumpify": "^2.0.1",
     "split2": "^3.2.2",
