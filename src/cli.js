@@ -11,6 +11,7 @@ function main () {
     .option('-p, --password <password>', 'Loki password')
     .option('--hostname <hostname>', 'Default hostname for the logs')
     .option('-b, --batch <size>', 'The number of log messages to send as a single batch (defaults to 1)')
+    .option('-a, --application <appName>', 'Name of application. Added as Loki Tag.')
     .option('--no-stdout', 'Disable output to stdout')
     .action(async options => {
       try {
@@ -18,8 +19,10 @@ function main () {
           user: options.user || process.env.PL_USER,
           password: options.password || process.env.PL_USER,
           hostname: options.hostname || process.env.PL_HOSTNAME,
+          applicationTag: options.application || 'App',
           size: options.batch || 1
         }
+        console.log(options)
         const writeStream = await pinoLoki.createWriteStream(config)
         process.stdin.pipe(writeStream)
 

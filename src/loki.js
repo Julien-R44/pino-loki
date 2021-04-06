@@ -29,7 +29,6 @@ class Client {
         }]
       };
 
-
       const result = await axios.post(url, toSend, { 
         headers: {
           'Content-Type': 'application/json'
