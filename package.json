@@ -1,6 +1,6 @@
 {
   "name": "pino-loki",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "A transport for pino that sends messages to Loki",
   "main": "src/index.js",
   "scripts": {

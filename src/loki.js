@@ -16,6 +16,11 @@ class Client {
 
     data.forEach(async item => {
       const url = `${this._options.hostname}/loki/api/v1/push`
+
+      Object.keys(item.tags).map(function(key, index) {
+        item.tags[key] = item.tags[key].toString();
+      })
+
       const toSend = { 
         streams: [{
           stream: {
@@ -25,11 +30,11 @@ class Client {
           },
           values: [[
             (new Date().getTime() * 1000000).toString(),
-            item.data
+            JSON.stringify(item.data)
           ]]
         }]
       };
-
+      
       const result = await axios.post(url, toSend, { 
         headers: {
           'Content-Type': 'application/json'
