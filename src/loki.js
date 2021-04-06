@@ -20,11 +20,12 @@ class Client {
         streams: [{
           stream: {
             application: this._options.applicationTag,
-            type: 'INFO'
+            type: 'INFO',
+            ...item.tags
           },
           values: [[
             (new Date().getTime() * 1000000).toString(),
-            item.message
+            item.data
           ]]
         }]
       };

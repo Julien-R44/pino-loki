@@ -32,14 +32,12 @@ function toLogEntry (item) {
   const host = item.hostname || ''
   const service = item.service || ''
   const ddsource = item.ddsource || item.source || ''
-  const objTags = (item.labels || item.tags || {})
-  const ddtags = Object.keys(objTags).map(k => { return `${k}:${objTags[k]}` }).join(',')
+  const tags = (item.labels || item.tags || {})
 
-  const entry = Object.assign({}, item, { timestamp, status, message, host, service, ddsource, ddtags })
-  delete entry.time; delete entry.level; delete entry.hostname; delete entry.source; delete entry.labels; delete entry.tags
+  const entry = Object.assign({}, item, { timestamp, status, message, host, service, ddsource, tags })
+  delete entry.time; delete entry.level; delete entry.hostname; delete entry.source; delete entry.labels;
   if (!service) { delete entry.service }
   if (!ddsource) { delete entry.ddsource }
-  if (!ddtags) { delete entry.ddtags }
   return entry
 }
 
