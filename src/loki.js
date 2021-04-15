@@ -25,7 +25,7 @@ class Client {
         streams: [{
           stream: {
             application: this._options.applicationTag,
-            type: 'INFO',
+            level: item.status,
             ...item.tags
           },
           values: [[
@@ -36,9 +36,7 @@ class Client {
       };
       
       const result = await axios.post(url, toSend, { 
-        headers: {
-          'Content-Type': 'application/json'
-        }
+        headers: { 'Content-Type': 'application/json' }
       })
       return result
     })
