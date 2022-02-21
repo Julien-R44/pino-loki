@@ -37,6 +37,7 @@ class Client {
       
       try {
         return await axios.post(url, toSend, { 
+          timeout: this._options.timeout || 1800000, // Timeout after 30 minutes
           headers: { 'Content-Type': 'application/json' }
         })
       } catch(err){
