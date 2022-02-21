@@ -35,10 +35,13 @@ class Client {
         }]
       };
       
-      const result = await axios.post(url, toSend, { 
-        headers: { 'Content-Type': 'application/json' }
-      })
-      return result
+      try {
+        return await axios.post(url, toSend, { 
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } catch(err){
+        console.error(`Attempting to send Loki request failed with status '${err.response.status}: ${err.response.statusText}' returned reason: ${err.response.data.trim()}`);
+      }
     })
   }
 
