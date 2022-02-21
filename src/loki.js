@@ -51,6 +51,10 @@ class Client {
             console.error('Got unknown error when trying to send log to Loki, error output:', err);
           }
         }
+        if(this._options.errorHandler){
+          this._options.errorHandler(err);
+        }
+        
       }
     })
   }
