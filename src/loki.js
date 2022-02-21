@@ -41,7 +41,16 @@ class Client {
           headers: { 'Content-Type': 'application/json' }
         })
       } catch(err){
-        console.error(`Attempting to send Loki request failed with status '${err.response.status}: ${err.response.statusText}' returned reason: ${err.response.data.trim()}`);
+        
+        if(this._options.silenceErrors !== true){
+          if(err.response){
+            console.error(`Attempting to send log to Loki failed with status '${err.response.status}: ${err.response.statusText}' returned reason: ${err.response.data.trim()}`);
+          } else if(err.isAxiosError === true){
+            console.error(`Attempting to send log to Loki failed. Got an axios error, error code: '${err.code}' message: ${err.message}`);
+          } else {
+            console.error('Got unknown error when trying to send log to Loki, error output:', err);
+          }
+        }
       }
     })
   }
