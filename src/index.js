@@ -4,11 +4,11 @@ const loki = require('./loki')
 const streams = require('./streams')
 const pumpify = require('pumpify')
 
-async function createWriteStream (options = {}) {
+async function createWriteStream(options = {}) {
   return createWriteStreamSync(options)
 }
 
-function createWriteStreamSync (options = {}) {
+function createWriteStreamSync(options = {}) {
   const { size = 1 } = options
 
   const parseJsonStream = streams.parseJsonStream()

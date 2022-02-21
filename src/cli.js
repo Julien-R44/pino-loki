@@ -4,7 +4,7 @@ const program = require('commander')
 const pkg = require('../package.json')
 const pinoLoki = require('././index')
 
-function main () {
+function main() {
   program
     .version(pkg.version)
     .option('-u, --user <user>', 'Loki username')
@@ -13,7 +13,7 @@ function main () {
     .option('-b, --batch <size>', 'The number of log messages to send as a single batch (defaults to 1)')
     .option('-a, --application <appName>', 'Name of application. Added as Loki Tag.')
     .option('--no-stdout', 'Disable output to stdout')
-    .action(async options => {
+    .action(async (options) => {
       try {
         const config = {
           user: options.user || process.env.PL_USER,
