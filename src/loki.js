@@ -41,7 +41,13 @@ class Client {
           headers: { 'Content-Type': 'application/json' }
         })
       } catch(err){
-        
+        if(this._options.errorHandler){
+          try {
+            this._options.errorHandler(err);
+          } catch(customHandlerError){
+            console.error("Got error from custom handler! Output:", customHandlerError);
+          }
+        }
         if(this._options.silenceErrors !== true){
           if(err.response){
             console.error(`Attempting to send log to Loki failed with status '${err.response.status}: ${err.response.statusText}' returned reason: ${err.response.data.trim()}`);
@@ -51,9 +57,7 @@ class Client {
             console.error('Got unknown error when trying to send log to Loki, error output:', err);
           }
         }
-        if(this._options.errorHandler){
-          this._options.errorHandler(err);
-        }
+        
         
       }
     })
