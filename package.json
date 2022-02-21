@@ -31,6 +31,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "pino": "7.8.0",
+    "pino-pretty": "^7.5.1",
     "prettier": "^2.2.1"
   },
   "dependencies": {
@@ -38,7 +39,6 @@
     "batch2": "^2.0.0",
     "commander": "^7.2.0",
     "fast-json-parse": "^1.0.3",
-    "pino-pretty": "^7.5.1",
     "pumpify": "^2.0.1",
     "split2": "^3.2.2",
     "stream": "0.0.2",
