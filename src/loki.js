@@ -35,10 +35,31 @@ class Client {
         }]
       };
       
-      const result = await axios.post(url, toSend, { 
-        headers: { 'Content-Type': 'application/json' }
-      })
-      return result
+      try {
+        return await axios.post(url, toSend, { 
+          timeout: this._options.timeout || 1800000, // Timeout after 30 minutes
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } catch(err){
+        if(this._options.errorHandler){
+          try {
+            this._options.errorHandler(err);
+          } catch(customHandlerError){
+            console.error("Got error from custom handler! Output:", customHandlerError);
+          }
+        }
+        if(this._options.silenceErrors !== true){
+          if(err.response){
+            console.error(`Attempting to send log to Loki failed with status '${err.response.status}: ${err.response.statusText}' returned reason: ${err.response.data.trim()}`);
+          } else if(err.isAxiosError === true){
+            console.error(`Attempting to send log to Loki failed. Got an axios error, error code: '${err.code}' message: ${err.message}`);
+          } else {
+            console.error('Got unknown error when trying to send log to Loki, error output:', err);
+          }
+        }
+        
+        
+      }
     })
   }
 
