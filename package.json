@@ -26,21 +26,21 @@
   ],
   "homepage": "https://github.com/Julien-R44/pino-loki#readme",
   "devDependencies": {
-    "eslint": "^7.23.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint": "^8.11.0",
+    "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.3.1",
-    "pino": "7.8.0",
-    "pino-pretty": "^7.5.1",
-    "prettier": "^2.2.1"
+    "eslint-plugin-prettier": "^4.0.0",
+    "pino": "7.9.1",
+    "pino-pretty": "^7.5.4",
+    "prettier": "^2.6.0"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.26.1",
     "batch2": "^2.0.0",
-    "commander": "^7.2.0",
+    "commander": "^9.0.0",
     "fast-json-parse": "^1.0.3",
     "pumpify": "^2.0.1",
-    "split2": "^3.2.2",
+    "split2": "^4.1.0",
     "stream": "0.0.2",
     "through2": "^4.0.2"
   }
