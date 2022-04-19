@@ -29,7 +29,7 @@ class Client {
               level: item.status,
               ...item.tags
             },
-            values: [[(new Date().getTime() * 1000000).toString(), JSON.stringify(item.data)]]
+            values: [[(new Date().getTime() * 1000000).toString(), JSON.stringify(item)]]
           }
         ]
       }
