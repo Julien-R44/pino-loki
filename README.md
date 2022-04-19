@@ -17,7 +17,7 @@ import * as pinoLoki from 'pino-loki';
 import pretty from 'pino-pretty';
 
 const streams = [
-  { level: 'debug', stream: pinoLoki.createWriteStreamSync({hostname: '127.0.0.1:3100', applicationTag: 'test_application_tag'}) },
+  { level: 'debug', stream: pinoLoki.createWriteStreamSync({hostname: 'http://127.0.0.1:3100', applicationTag: 'test_application_tag'}) },
   { level: 'debug', stream: pretty() }
 ];
 
