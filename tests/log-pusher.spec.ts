@@ -4,7 +4,7 @@ import nock from 'nock'
 
 // TODO: add some log pusher tests
 test.group('Log Pusher', () => {
-  test('Push should call loki endpoint with correct payload', async ({ assert }) => {
+  test('Push should call loki endpoint with correct payload', async () => {
     const logPusher = new LogPusher({
       host: 'localhost',
     })
