@@ -3,33 +3,76 @@ This module provides a transport for pino that forwards messages to a Loki insta
 
 ## Why pino-loki
 Pino-loki is based upon the highly performant logging library pino. Loki usually gets the logs through Promtail which reads system logs from files. This setup may not always be possible or require additional infrastructure, especially in situations where logs are gathered application code deployed as a SaaS in the cloud. Pino-loki sends the pino logs directly to Loki.
+
 ## CLI Instructions
 ```shell
 npm install -g pino-loki
-node foo | pino-loki --hostname=http://hostname:3100 -a ApplicationTag
+node foo | pino-loki --hostname=http://hostname:3100
 ```
 
-## Node example
-How to use pino-loki as a multistream with several streams, using pino-pretty and pino-loki as examples:
-```js
-import pino from 'pino';
-import * as pinoLoki from 'pino-loki';
-import pretty from 'pino-pretty';
-
-const streams = [
-  { level: 'debug', stream: pinoLoki.createWriteStreamSync({hostname: '127.0.0.1:3100', applicationTag: 'test_application_tag'}) },
-  { level: 'debug', stream: pretty() }
-];
-
-let logger = pino({level:'info'}, pino.multistream(streams));
-// Log message without tags to Loki
-logger.info("Hello world!");
-// Log message with custom tags to Loki
-logger.info({message:"Hello world!", tags: {someCustomTag:"BEEP BOOP"}})
 ```
+$ pino-loki -h
+Options:
+  -V, --version              output the version number
+  -u, --user <user>          Loki username
+  -p, --password <password>  Loki password
+  --hostname <hostname>      URL for Loki
+  -b, --batch                Should logs be sent in batch mode
+  -i, --interval <interval>  The interval at which batched logs are sent in seconds
+  -t, --timeout <timeout>    Timeout for request to Loki
+  -s, --silenceErrors        If false, errors will be displayed in the console
+  -r, --replaceTimestamp     Replace pino logs timestamps with Date.now()
+  -l, --labels <label>       Additional labels to be added to all Loki logs
+  --no-stdout                Disable output to stdout
+  -h, --help                 display help for command
+```
+
+## Programmatic integration
+
+## As Module 
+
+```ts
+import pino from 'pino'
+
+const transport = pino.transport({
+  target: "pino-loki",
+  options: {
+    batching: true,
+    interval: 5,
+    basicAuth: {
+      username: "username",
+      password: "password",
+    },
+  },
+});
+
+const logger = pino(transport);
+
+logger.error({ foo: 'bar' })
+```
+
+## Multiple transports
+
+```ts
+import pino from 'pino'
+
+const transport = pino.transport({
+  targets: [
+    { target: "pino-loki" },
+    { target: 'pino-pretty' }
+  ],
+});
+
+const logger = pino(transport);
+
+logger.error({ foo: 'bar' })
+```
+
+
 # Limitations and considerations
 ## Out-of-order errors
 Out-of-order Loki errors can occur due to the asynchronous nature of Pino. The fix to this is to allow for out-of-order logs in the Loki configuration. The reason why Loki doesn't have this enabled by default is because Promtail accounts for ordering constraints, however the same issue can also happen with promtail in high-load or when working with distributed networks.
+
 ## Dropped logs
 If any network issues occur, the logs can be dropped. The recommendation is therefore to implement a failover solution, this will vary greatly from system to system.
 
@@ -39,13 +82,6 @@ Running a local Loki for testing is probably required, and the easiest way to do
 
 Refer to https://grafana.com/docs/loki/latest/api/ for documentation about the available endpoints, data formats etc.
 
-### Example
-```sh
-npm install
-npm link
-cd ~/your_project
-npm link pino-loki
-npm install
-```
-And you should have a working, requirable pino-loki package under your project's node_modules.
-After the link has been established, any changes to pino-loki should show on rerun of the software that uses it.
+## License
+
+[MIT](./LICENSE) License © 2022 [Julien Ripouteau](https://github.com/Julien-R44)
