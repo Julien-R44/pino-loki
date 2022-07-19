@@ -95,6 +95,13 @@
       ]
     }
   },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "openapi-types"
+      ]
+    }
+  },
   "eslintIgnore": [
     "build",
     "dist"
