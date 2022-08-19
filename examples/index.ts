@@ -20,9 +20,13 @@ const transport = pino.transport<PinoLokiOptionsContract>({
 
 const logger = pino(transport)
 
-logger.warn({ warning: '1' })
-await sleep(1000)
-logger.error({ hey: '2' })
-await sleep(1000)
-logger.info({ test: '3' })
-await sleep(5000)
+async function main() {
+  logger.warn({ warning: '1' })
+  await sleep(1000)
+  logger.error({ hey: '2' })
+  await sleep(1000)
+  logger.info({ test: '3' })
+  await sleep(5000)
+}
+
+main()
