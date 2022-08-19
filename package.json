@@ -52,7 +52,7 @@
     "prepublishOnly": "nr build",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "start": "tsx src/index.ts",
-    "test": "tsx bin/test.ts",
+    "test": "node -r ts-node/register bin/test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
