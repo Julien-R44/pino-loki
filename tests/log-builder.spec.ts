@@ -56,4 +56,26 @@ test.group('Log Builder', () => {
 
     assert.closeTo(+lokiLog.values[0][0], +currentTime, 10000000)
   })
+
+
+  test('Replace timestamps custom field', async ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    let currentTime = new Date()
+    let nanotime = `${currentTime.getTime()}000000`
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: currentTime,
+      nanotime,
+      v: 1,
+    }
+
+    const lokiLog = logBuilder.build(log, "nanotime", { application: 'MY-APP' })
+
+    assert.deepEqual(lokiLog.values[0][0], nanotime)
+    assert.isFalse(lokiLog.values[0][1].includes("nanotime"))
+  })
 })

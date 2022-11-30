@@ -25,7 +25,7 @@ export class LogBuilder {
    */
   public build(
     log: PinoLog,
-    replaceTimestamp?: boolean,
+    replaceTimestamp?: boolean | string,
     additionalLabels?: Record<string, string>
   ): LokiLog {
     const hostname = log.hostname
@@ -35,7 +35,13 @@ export class LogBuilder {
 
     let time = (log.time * 1000000).toString()
     if (replaceTimestamp) {
-      time = (new Date().getTime() * 1000000).toString()
+      if (typeof(replaceTimestamp) === "string") {
+        time = log[replaceTimestamp]
+        delete log[replaceTimestamp]
+      }
+      else {
+        time = (new Date().getTime() * 1000000).toString()
+      }
     }
 
     return {

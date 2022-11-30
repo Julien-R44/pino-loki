@@ -63,7 +63,7 @@ export interface PinoLokiOptionsContract {
    * Be careful when using batch mode, that will cause all logs
    * to have the same timestamp
    */
-  replaceTimestamp?: boolean
+  replaceTimestamp?: boolean | string
 
   /**
    * Additional labels to be added to all Loki logs
