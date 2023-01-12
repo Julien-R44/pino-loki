@@ -4,6 +4,11 @@ import { LokiLog, LokiLogLevel, PinoLog } from '../Contracts'
  * Converts a Pino log to a Loki log
  */
 export class LogBuilder {
+  propsToLabel: string[]
+
+  constructor(propsToLabel: string[] = []) {
+    this.propsToLabel = propsToLabel
+  }
   /**
    * Convert a level to a human readable status
    */
@@ -37,12 +42,19 @@ export class LogBuilder {
     if (replaceTimestamp) {
       time = (new Date().getTime() * 1000000).toString()
     }
+    const propsLabels = this.propsToLabel.reduce((acc, current) => {
+      if (log[current]) {
+        acc[current] = log[current]
+      }
+      return acc
+    }, {} as { [key:string]: any})
 
     return {
       stream: {
         level: status,
         hostname,
         ...additionalLabels,
+        ...propsLabels
       },
       values: [[time, JSON.stringify(log)]],
     }

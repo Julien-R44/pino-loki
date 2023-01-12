@@ -79,4 +79,9 @@ export interface PinoLokiOptionsContract {
     username: string
     password: string
   }
+
+  /**
+   * Select log message's props to set as Loki labels
+   */
+  propsToLabels?: string[]
 }

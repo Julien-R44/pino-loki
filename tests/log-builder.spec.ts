@@ -56,4 +56,21 @@ test.group('Log Builder', () => {
 
     assert.closeTo(+lokiLog.values[0][0], +currentTime, 10000000)
   })
+
+  test('Props to label', ({ assert }) => {
+    const logBuilder = new LogBuilder(['appId', 'buildId'])
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: new Date(),
+      v: 1,
+      appId: 123,
+      buildId: 'aaaa',
+    }
+    const lokiLog = logBuilder.build(log, true, { application: 'MY-APP' })
+    assert.equal(lokiLog.stream.appId, 123)
+    assert.equal(lokiLog.stream.buildId, 'aaaa')
+  })
 })

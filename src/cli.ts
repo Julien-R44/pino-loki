@@ -19,6 +19,7 @@ export const parseArgs = () => {
     .option('-s, --silenceErrors', 'If false, errors will be displayed in the console')
     .option('-r, --replaceTimestamp', 'Replace pino logs timestamps with Date.now()')
     .option('-l, --labels <label>', 'Additional labels to be added to all Loki logs')
+    .option('-pl, --propsLabels <label>', 'Fields in log line to convert to Loki labels')
     .option('--no-stdout', 'Disable output to stdout')
 
   program.parse(process.argv)
@@ -40,6 +41,7 @@ export const createPinoLokiConfigFromArgs = () => {
     interval: opts.interval,
     replaceTimestamp: opts.replaceTimestamp,
     labels: opts.labels ? JSON.parse(opts.labels) : undefined,
+    propsToLabels: opts.propsLabels ? opts.propsLabels.split(',') : [],
     basicAuth: {
       username: opts.user,
       password: opts.password,
