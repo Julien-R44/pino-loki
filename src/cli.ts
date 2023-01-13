@@ -19,7 +19,10 @@ export const parseArgs = () => {
     .option('-s, --silenceErrors', 'If false, errors will be displayed in the console')
     .option('-r, --replaceTimestamp', 'Replace pino logs timestamps with Date.now()')
     .option('-l, --labels <label>', 'Additional labels to be added to all Loki logs')
-    .option('-pl, --propsLabels <label>', 'Fields in log line to convert to Loki labels')
+    .option(
+      '-pl, --propsLabels <labels>',
+      'Fields in log line to convert to Loki labels (comma separated values)'
+    )
     .option('--no-stdout', 'Disable output to stdout')
 
   program.parse(process.argv)

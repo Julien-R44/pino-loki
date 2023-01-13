@@ -16,18 +16,19 @@ node foo | pino-loki --hostname=http://hostname:3100
 ```
 $ pino-loki -h
 Options:
-  -V, --version              output the version number
-  -u, --user <user>          Loki username
-  -p, --password <password>  Loki password
-  --hostname <hostname>      URL for Loki
-  -b, --batch                Should logs be sent in batch mode
-  -i, --interval <interval>  The interval at which batched logs are sent in seconds
-  -t, --timeout <timeout>    Timeout for request to Loki
-  -s, --silenceErrors        If false, errors will be displayed in the console
-  -r, --replaceTimestamp     Replace pino logs timestamps with Date.now()
-  -l, --labels <label>       Additional labels to be added to all Loki logs
-  --no-stdout                Disable output to stdout
-  -h, --help                 display help for command
+  -V, --version                  output the version number
+  -u, --user <user>              Loki username
+  -p, --password <password>      Loki password
+  --hostname <hostname>          URL for Loki
+  -b, --batch                    Should logs be sent in batch mode
+  -i, --interval <interval>      The interval at which batched logs are sent in seconds
+  -t, --timeout <timeout>        Timeout for request to Loki
+  -s, --silenceErrors            If false, errors will be displayed in the console
+  -r, --replaceTimestamp         Replace pino logs timestamps with Date.now()
+  -l, --labels <label>           Additional labels to be added to all Loki logs
+  -pl, --propsLabels <labels>    Fields in log line to convert to Loki labels (comma separated values)
+  --no-stdout                    Disable output to stdout
+  -h, --help                     display help for command
 ```
 
 ## Programmatic integration
