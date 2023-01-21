@@ -8,7 +8,7 @@ export default async function (options: PinoLokiOptionsContract) {
   options.batching ??= true
   options.interval ??= 5
   options.replaceTimestamp ??= false
-
+  options.propsToLabels ??= []
   const logPusher = new LogPusher(options)
 
   return build(async (source: any) => {

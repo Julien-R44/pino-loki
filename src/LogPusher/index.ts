@@ -20,8 +20,8 @@ export class LogPusher {
     if (this.options.basicAuth) {
       this.client.defaults.auth = this.options.basicAuth
     }
-
-    this.logBuilder = new LogBuilder()
+    const propsToLabels = options.propsToLabels || []
+    this.logBuilder = new LogBuilder(propsToLabels)
   }
 
   /**

@@ -8,4 +8,11 @@ test.group('Cli', () => {
 
     assert.deepEqual(ret.labels, { test: '42', hello: { world: '42' } })
   })
+
+  test('Should set props to labels', ({ assert }) => {
+    process.argv = ['node', 'src/cli.ts', '--propsLabels', `foo,bar`]
+    const ret = createPinoLokiConfigFromArgs()
+
+    assert.deepEqual(ret.propsToLabels, ['foo', 'bar'])
+  })
 })
