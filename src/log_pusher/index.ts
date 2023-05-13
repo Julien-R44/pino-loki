@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
-import { PinoLog, PinoLokiOptionsContract } from '../types'
-import { LogBuilder } from '../log_builder'
+import { PinoLog, PinoLokiOptionsContract } from '../types/index.js'
+import { LogBuilder } from '../log_builder/index.js'
 
 /**
  * Responsible for pushing logs to Loki
@@ -36,13 +36,13 @@ export class LogPusher {
       return console.error(
         `Attempting to send log to Loki failed with status '${err.response.status}: ${
           err.response.statusText
-        }' returned reason: ${JSON.stringify(err.response.data)}`
+        }' returned reason: ${JSON.stringify(err.response.data)}`,
       )
     }
 
     if (err.isAxiosError === true) {
       return console.error(
-        `Attempting to send log to Loki failed. Got an axios error, error code: '${err.code}' message: ${err.message}`
+        `Attempting to send log to Loki failed. Got an axios error, error code: '${err.code}' message: ${err.message}`,
       )
     }
 
@@ -58,7 +58,7 @@ export class LogPusher {
     }
 
     const lokiLogs = logs.map((log) =>
-      this.logBuilder.build(log, this.options.replaceTimestamp, this.options.labels)
+      this.logBuilder.build(log, this.options.replaceTimestamp, this.options.labels),
     )
 
     await this.client

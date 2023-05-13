@@ -1,6 +1,6 @@
 import build from 'pino-abstract-transport'
-import { PinoLog, PinoLokiOptionsContract } from './types'
-import { LogPusher } from './log_pusher'
+import { PinoLog, PinoLokiOptionsContract } from './types/index.js'
+import { LogPusher } from './log_pusher/index.js'
 
 export default async function (options: PinoLokiOptionsContract) {
   options.timeout ??= 30000
@@ -11,7 +11,7 @@ export default async function (options: PinoLokiOptionsContract) {
   options.propsToLabels ??= []
   const logPusher = new LogPusher(options)
 
-  return build(async (source: any) => {
+  return build.default(async (source: any) => {
     let pinoLogBuffer: PinoLog[] = []
 
     if (options.batching) {

@@ -1,4 +1,4 @@
-import { LokiLog, LokiLogLevel, PinoLog } from '../types'
+import { LokiLog, LokiLogLevel, PinoLog } from '../types/index.js'
 
 /**
  * Converts a Pino log to a Loki log
@@ -31,7 +31,7 @@ export class LogBuilder {
   public build(
     log: PinoLog,
     replaceTimestamp?: boolean,
-    additionalLabels?: Record<string, string>
+    additionalLabels?: Record<string, string>,
   ): LokiLog {
     const hostname = log.hostname
     const status = this.statusFromLevel(log.level)

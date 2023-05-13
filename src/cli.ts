@@ -1,7 +1,7 @@
-import type { PinoLokiOptionsContract } from './types'
+import type { PinoLokiOptionsContract } from './types/index.js'
 import { program } from 'commander'
-import pkg from '../package.json'
-import build from './index'
+import pkg from '../package.json' assert { type: 'json' }
+import build from './index.js'
 import pump from 'pump'
 
 /**
@@ -21,7 +21,7 @@ export const parseArgs = () => {
     .option('-l, --labels <label>', 'Additional labels to be added to all Loki logs')
     .option(
       '-pl, --propsLabels <labels>',
-      'Fields in log line to convert to Loki labels (comma separated values)'
+      'Fields in log line to convert to Loki labels (comma separated values)',
     )
     .option('--no-stdout', 'Disable output to stdout')
 

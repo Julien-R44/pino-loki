@@ -1,7 +1,7 @@
 import 'dotenv/config'
-import pino from 'pino'
-import { PinoLokiOptionsContract } from '../src/types'
-import { sleep } from '../src/utils'
+import { pino } from 'pino'
+import { PinoLokiOptionsContract } from '../src/types/index.js'
+import { sleep } from '../src/utils/index.js'
 
 const transport = pino.transport<PinoLokiOptionsContract>({
   target: '../dist/index.mjs', // 👈 Replace this with "pino-loki"

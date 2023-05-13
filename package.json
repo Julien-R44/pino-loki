@@ -1,6 +1,7 @@
 {
   "name": "pino-loki",
   "version": "2.0.4",
+  "type": "module",
   "description": "A transport for pino that sends messages to Loki",
   "keywords": [
     "pino",
@@ -52,7 +53,7 @@
     "prepublishOnly": "pnpm build",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "start": "tsx src/index.ts",
-    "test": "node -r ts-node/register bin/test.ts",
+    "test": "node --loader=ts-node/esm bin/test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
