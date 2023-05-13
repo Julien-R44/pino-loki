@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { LogPusher } from '../src/LogPusher'
+import { LogPusher } from '../src/log_pusher'
 import nock from 'nock'
 
 // TODO: add some log pusher tests

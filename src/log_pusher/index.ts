@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
-import { PinoLog, PinoLokiOptionsContract } from '../Contracts'
-import { LogBuilder } from '../LogBuilder'
+import { PinoLog, PinoLokiOptionsContract } from '../types'
+import { LogBuilder } from '../log_builder'
 
 /**
  * Responsible for pushing logs to Loki

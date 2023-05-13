@@ -1,7 +1,7 @@
 import { test } from '@japa/runner'
-import { PinoLog } from '../src/Contracts'
-import { LogBuilder } from '../src/LogBuilder'
-import { sleep } from '../src/Utils'
+import { PinoLog } from '../src/types'
+import { LogBuilder } from '../src/log_builder'
+import { sleep } from '../src/utils'
 
 test.group('Log Builder', () => {
   test('Status mapper', ({ assert }) => {

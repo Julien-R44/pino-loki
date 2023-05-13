@@ -1,4 +1,4 @@
-import type { PinoLokiOptionsContract } from './Contracts'
+import type { PinoLokiOptionsContract } from './types'
 import { program } from 'commander'
 import pkg from '../package.json'
 import build from './index'

@@ -1,4 +1,4 @@
-import { LokiLog, LokiLogLevel, PinoLog } from '../Contracts'
+import { LokiLog, LokiLogLevel, PinoLog } from '../types'
 
 /**
  * Converts a Pino log to a Loki log

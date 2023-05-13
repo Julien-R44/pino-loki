@@ -1,6 +1,6 @@
 import build from 'pino-abstract-transport'
-import { PinoLog, PinoLokiOptionsContract } from './Contracts'
-import { LogPusher } from './LogPusher'
+import { PinoLog, PinoLokiOptionsContract } from './types'
+import { LogPusher } from './log_pusher'
 
 export default async function (options: PinoLokiOptionsContract) {
   options.timeout ??= 30000
