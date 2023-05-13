@@ -49,7 +49,7 @@
     "dev": "unbuild --stub",
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
-    "prepublishOnly": "nr build",
+    "prepublishOnly": "pnpm build",
     "release": "bumpp --commit --push --tag && pnpm publish",
     "start": "tsx src/index.ts",
     "test": "node -r ts-node/register bin/test.ts",
@@ -93,13 +93,6 @@
         {
           "endOfLine": "auto"
         }
-      ]
-    }
-  },
-  "pnpm": {
-    "peerDependencyRules": {
-      "ignoreMissing": [
-        "openapi-types"
       ]
     }
   },
