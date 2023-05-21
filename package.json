@@ -1,6 +1,6 @@
 {
   "name": "pino-loki",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "type": "module",
   "description": "A transport for pino that sends messages to Loki",
   "keywords": [
