@@ -1,4 +1,4 @@
-import type { PinoLokiOptionsContract } from './types/index.js'
+import type { LokiOptions } from './types/index.js'
 import { program } from 'commander'
 import pkg from '../package.json' assert { type: 'json' }
 import build from './index.js'
@@ -36,7 +36,7 @@ export const parseArgs = () => {
 export const createPinoLokiConfigFromArgs = () => {
   const opts = parseArgs()
 
-  const config: PinoLokiOptionsContract = {
+  const config: LokiOptions = {
     host: opts.hostname,
     timeout: opts.timeout,
     silenceErrors: opts.silenceErrors,
@@ -54,11 +54,7 @@ export const createPinoLokiConfigFromArgs = () => {
   return config
 }
 
-export async function main() {
-  const config = createPinoLokiConfigFromArgs()
-  const res = await build(config)
+const config = createPinoLokiConfigFromArgs()
+const pinoLoki = build(config)
 
-  pump(process.stdin, res)
-}
-
-main()
+pump(process.stdin, pinoLoki)

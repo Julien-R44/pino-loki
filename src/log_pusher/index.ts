@@ -1,34 +1,37 @@
 import axios, { AxiosInstance } from 'axios'
-import { PinoLog, PinoLokiOptionsContract } from '../types/index.js'
+import { PinoLog, LokiOptions } from '../types/index.js'
 import { LogBuilder } from '../log_builder/index.js'
+import debug from '../debug.js'
 
 /**
  * Responsible for pushing logs to Loki
  */
 export class LogPusher {
-  private options: PinoLokiOptionsContract
-  private logBuilder: LogBuilder
-  private client: AxiosInstance
+  #options: LokiOptions
+  #logBuilder: LogBuilder
+  #client: AxiosInstance
 
-  constructor(options: PinoLokiOptionsContract) {
-    this.options = options
-    this.client = axios.create({
-      baseURL: this.options.host,
-      timeout: this.options.timeout,
+  constructor(options: LokiOptions) {
+    this.#options = options
+    this.#client = axios.create({
+      baseURL: this.#options.host,
+      timeout: this.#options.timeout,
     })
 
-    if (this.options.basicAuth) {
-      this.client.defaults.auth = this.options.basicAuth
+    if (this.#options.basicAuth) {
+      this.#client.defaults.auth = this.#options.basicAuth
     }
+
     const propsToLabels = options.propsToLabels || []
-    this.logBuilder = new LogBuilder(propsToLabels)
+    this.#logBuilder = new LogBuilder(propsToLabels)
   }
 
   /**
    * Handle push failures
    */
-  private handleFailure(err: any) {
-    if (this.options.silenceErrors === true) {
+  #handleFailure(err: any) {
+    console.error('Got error when trying to send log to Loki, error output:', err)
+    if (this.#options.silenceErrors === true) {
       return
     }
 
@@ -58,11 +61,15 @@ export class LogPusher {
     }
 
     const lokiLogs = logs.map((log) =>
-      this.logBuilder.build(log, this.options.replaceTimestamp, this.options.labels),
+      this.#logBuilder.build(log, this.#options.replaceTimestamp, this.#options.labels),
     )
 
-    await this.client
+    debug(`[LogPusher] pushing ${lokiLogs.length} logs to Loki`)
+
+    await this.#client
       .post(`/loki/api/v1/push`, { streams: lokiLogs })
-      .catch(this.handleFailure.bind(this))
+      .catch(this.#handleFailure.bind(this))
+
+    debug(`[LogPusher] pushed ${lokiLogs.length} logs to Loki`, { logs: lokiLogs })
   }
 }

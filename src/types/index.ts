@@ -31,7 +31,7 @@ export interface PinoLog {
 /**
  * Options for the Pino-Loki transport
  */
-export interface PinoLokiOptionsContract {
+export interface LokiOptions {
   /**
    * URL for Loki
    */

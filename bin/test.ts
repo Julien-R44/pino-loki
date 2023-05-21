@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
 import { processCliArgs, configure, run } from '@japa/runner'
@@ -18,11 +19,21 @@ import { pathToFileURL } from 'url'
 */
 configure({
   ...processCliArgs(process.argv.slice(2)),
-  files: ['tests/**/*.spec.ts'],
   plugins: [assert()],
   reporters: [specReporter()],
   forceExit: true,
   importer: (filePath) => import(pathToFileURL(filePath).href),
+  suites: [
+    {
+      name: 'unit',
+      files: ['tests/unit/**/*.spec.ts'],
+    },
+    {
+      name: 'integration',
+      files: ['tests/integration/**/*.spec.ts'],
+      timeout: 10000,
+    },
+  ],
 })
 
 /*

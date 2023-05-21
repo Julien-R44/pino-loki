@@ -1,40 +1,71 @@
 import abstractTransportBuild from 'pino-abstract-transport'
-import { PinoLog, PinoLokiOptionsContract } from './types/index.js'
+import { PinoLog, LokiOptions } from './types/index.js'
 import { LogPusher } from './log_pusher/index.js'
+import debug from './debug.js'
 
 // @ts-ignore
 const build = abstractTransportBuild as typeof abstractTransportBuild.default
 
-export default async function (options: PinoLokiOptionsContract) {
-  options.timeout ??= 30000
-  options.silenceErrors ??= false
-  options.batching ??= true
-  options.interval ??= 5
-  options.replaceTimestamp ??= false
-  options.propsToLabels ??= []
+/**
+ * Resolves the options for the Pino Loki transport
+ */
+function resolveOptions(options: LokiOptions) {
+  return {
+    ...options,
+    timeout: options.timeout ?? 30000,
+    silenceErrors: options.silenceErrors ?? false,
+    batching: options.batching ?? true,
+    interval: options.interval ?? 5,
+    replaceTimestamp: options.replaceTimestamp ?? false,
+    propsToLabels: options.propsToLabels ?? [],
+  }
+}
+
+function pinoLoki(userOptions: LokiOptions) {
+  const options = resolveOptions(userOptions)
   const logPusher = new LogPusher(options)
 
-  return build(async (source: any) => {
-    let pinoLogBuffer: PinoLog[] = []
+  let batchInterval: NodeJS.Timer | undefined
+  let pinoLogBuffer: PinoLog[] = []
 
-    if (options.batching) {
-      setInterval(async () => {
-        if (pinoLogBuffer.length === 0) {
-          return
-        }
-
-        logPusher.push(pinoLogBuffer)
-        pinoLogBuffer = []
-      }, options.interval! * 1000)
-    }
-
-    for await (let obj of source) {
+  return build(
+    async (source) => {
       if (options.batching) {
-        pinoLogBuffer.push(obj)
-        continue
+        batchInterval = setInterval(async () => {
+          debug(`Batch interval reached, sending ${pinoLogBuffer.length} logs to Loki`)
+
+          if (pinoLogBuffer.length === 0) {
+            return
+          }
+
+          logPusher.push(pinoLogBuffer)
+          pinoLogBuffer = []
+        }, options.interval! * 1000)
       }
 
-      logPusher.push(obj)
-    }
-  })
+      for await (let obj of source) {
+        if (options.batching) {
+          pinoLogBuffer.push(obj)
+          continue
+        }
+
+        logPusher.push(obj)
+      }
+    },
+    {
+      /**
+       * When transport is closed, push remaining logs to Loki
+       * and clear the interval
+       */
+      async close() {
+        if (options.batching) {
+          clearInterval(batchInterval!)
+          await logPusher.push(pinoLogBuffer)
+        }
+      },
+    },
+  )
 }
+
+export default pinoLoki
+export type { LokiOptions }

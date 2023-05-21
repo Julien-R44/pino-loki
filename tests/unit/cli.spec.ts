@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { createPinoLokiConfigFromArgs } from '../src/cli.js'
+import { createPinoLokiConfigFromArgs } from '../../src/cli.js'
 
 test.group('Cli', () => {
   test('Should parse custom labels', ({ assert }) => {
