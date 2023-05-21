@@ -55,6 +55,10 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    env:
+      LOKI_HOST: ${{ secrets.LOKI_HOST }}
+      LOKI_USERNAME: ${{ secrets.LOKI_USERNAME }}
+      LOKI_PASSWORD: ${{ secrets.LOKI_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v2
