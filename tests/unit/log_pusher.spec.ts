@@ -2,7 +2,11 @@ import { test } from '@japa/runner'
 import { LogPusher } from '../../src/log_pusher/index.js'
 import nock from 'nock'
 
-test.group('LogPusher', () => {
+test.group('LogPusher', (group) => {
+  group.each.teardown(async () => {
+    nock.cleanAll()
+  })
+
   test('should send custom headers', async ({ assert }) => {
     const pusher = new LogPusher({
       host: 'http://localhost:3100',

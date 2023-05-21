@@ -3,6 +3,14 @@ import { PinoLog } from '../../src/types/index.js'
 import { LogBuilder } from '../../src/log_builder/index.js'
 import { sleep } from '../../src/utils/index.js'
 
+const loadNs = process.hrtime()
+const loadMs = new Date().getTime()
+
+function nanoseconds() {
+  let diffNs = process.hrtime(loadNs)
+  return BigInt(loadMs) * BigInt(1e6) + BigInt(diffNs[0] * 1e9 + diffNs[1])
+}
+
 test.group('Log Builder', () => {
   test('Status mapper', ({ assert }) => {
     const logBuilder = new LogBuilder()
@@ -18,7 +26,7 @@ test.group('Log Builder', () => {
   test('Build a loki log entry from a pino log', ({ assert }) => {
     const logBuilder = new LogBuilder()
 
-    const currentTime = new Date()
+    const currentTime = new Date().getTime()
     const log: PinoLog = {
       hostname: 'localhost',
       level: 30,
@@ -35,7 +43,7 @@ test.group('Log Builder', () => {
     assert.deepEqual(lokiLog.stream.hostname, 'localhost')
     assert.deepEqual(lokiLog.stream.application, 'MY-APP')
     assert.deepEqual(lokiLog.values[0][1], JSON.stringify(log))
-    assert.deepEqual(+lokiLog.values[0][0], currentTime.getTime() * 1000000)
+    assert.deepEqual(+lokiLog.values[0][0], currentTime * 1000000)
   })
 
   test('Replace timestamps', async ({ assert }) => {
@@ -72,5 +80,40 @@ test.group('Log Builder', () => {
     const lokiLog = logBuilder.build(log, true, { application: 'MY-APP' })
     assert.equal(lokiLog.stream.appId, 123)
     assert.equal(lokiLog.stream.buildId, 'aaaa')
+  })
+
+  test('should not modify nanoseconds timestamps', ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    const now = nanoseconds().toString()
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: now,
+    }
+
+    const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
+
+    console.log(now)
+    assert.deepEqual(lokiLog.values[0][0], now)
+  })
+
+  test('should convert timestamps to nanoseconds', ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    const now = new Date().getTime().toString()
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: now,
+    }
+
+    const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
+
+    assert.deepEqual(lokiLog.values[0][0], now + '000000')
   })
 })

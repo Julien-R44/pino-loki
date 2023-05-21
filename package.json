@@ -54,7 +54,6 @@
     "release": "bumpp --commit --push --tag && pnpm publish",
     "stub": "unbuild --stub",
     "quick:test": "node --loader=ts-node/esm bin/test.ts",
-    "start": "tsx src/index.ts",
     "test": "node --loader=ts-node/esm bin/test.ts",
     "typecheck": "tsc --noEmit"
   },
@@ -78,7 +77,6 @@
     "prettier": "^2.8.8",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
-    "tsx": "^3.12.7",
     "typescript": "^5.0.4",
     "unbuild": "^1.2.1"
   },

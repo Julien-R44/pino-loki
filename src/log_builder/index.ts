@@ -1,5 +1,7 @@
 import { LokiLog, LokiLogLevel, PinoLog } from '../types/index.js'
 
+const NANOSECONDS_LENGTH = 19
+
 /**
  * Converts a Pino log to a Loki log
  */
@@ -26,6 +28,25 @@ export class LogBuilder {
     )
   }
 
+  #buildTimestamp(log: PinoLog, replaceTimestamp?: boolean): string {
+    if (replaceTimestamp) {
+      return (new Date().getTime() * 1000000).toString()
+    }
+
+    const time = log.time || Date.now()
+    const strTime = time.toString()
+
+    // Returns the time if it's already in nanoseconds
+    if (strTime.length === NANOSECONDS_LENGTH) {
+      console.log('time is already in nanoseconds')
+      return strTime
+    }
+
+    // Otherwise, find the missing factor to convert it to nanoseconds
+    const missingFactor = 10 ** (19 - strTime.length)
+    return (time * missingFactor).toString()
+  }
+
   /**
    * Build a loki log entry from a pino log
    */
@@ -39,10 +60,7 @@ export class LogBuilder {
 
     log.hostname = undefined
 
-    let time = (log.time * 1000000).toString()
-    if (replaceTimestamp) {
-      time = (new Date().getTime() * 1000000).toString()
-    }
+    let time = this.#buildTimestamp(log, replaceTimestamp)
 
     const propsLabels: { [key: string]: any } = {}
     for (const prop of this.#propsToLabel) {

@@ -63,6 +63,16 @@ Options:
   -h, --help                     display help for command
 ```
 
+## Examples
+
+Feel free to explore the different examples in the [examples](./examples) folder.
+
+- [module_usage.ts](./examples/module_usage.ts) - Example of using pino-loki as a module in the main process
+- [basic.ts](./examples/basic.ts) - Basic example of using pino-loki in a worker thread
+- [batching.ts](./examples/batching.ts) - Example of using pino-loki in a worker thread with batching enabled
+- [cli.ts](./examples/cli.ts) - Example of using pino-loki as a CLI
+- [custom_timestamp.ts](./examples/custom_timestamp.ts) - Example of using pino-loki with nanoseconds timestamps
+
 # Options
 
 - `batch` and `interval` are used to enable batching of logs. When enabled, logs are sent in batches every `interval` seconds. This is useful for reducing the number of requests to Loki.

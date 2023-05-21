@@ -25,6 +25,8 @@ function pinoLoki(userOptions: LokiOptions) {
   const options = resolveOptions(userOptions)
   const logPusher = new LogPusher(options)
 
+  debug(`[PinoLoki] initialized with options: ${JSON.stringify(options)}`)
+
   let batchInterval: NodeJS.Timer | undefined
   let pinoLogBuffer: PinoLog[] = []
 
