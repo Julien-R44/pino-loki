@@ -54,7 +54,7 @@
     "release": "bumpp --commit --push --tag && pnpm publish",
     "stub": "unbuild --stub",
     "quick:test": "node --loader=ts-node/esm bin/test.ts",
-    "test": "node --loader=ts-node/esm bin/test.ts",
+    "test": "c8 node --loader=ts-node/esm bin/test.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -65,6 +65,7 @@
     "@types/node": "^20.2.1",
     "@types/pump": "^1.1.1",
     "bumpp": "^9.1.0",
+    "c8": "^7.13.0",
     "dotenv": "^16.0.3",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
