@@ -95,8 +95,6 @@ test.group('Log Builder', () => {
     }
 
     const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
-
-    console.log(now)
     assert.deepEqual(lokiLog.values[0][0], now)
   })
 

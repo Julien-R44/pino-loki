@@ -38,7 +38,6 @@ export class LogBuilder {
 
     // Returns the time if it's already in nanoseconds
     if (strTime.length === NANOSECONDS_LENGTH) {
-      console.log('time is already in nanoseconds')
       return strTime
     }
 
