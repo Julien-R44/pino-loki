@@ -15,7 +15,7 @@ Pino-loki is for Pino v7.0.0 and above, so the module can be configured to opera
 
 ```ts
 import pino from 'pino'
-import type { LokiTransportOptions } from 'pino-loki'
+import type { LokiOptions } from 'pino-loki'
 
 const transport = pino.transport<LokiTransportOptions>({
   target: "pino-loki",
@@ -73,7 +73,7 @@ Feel free to explore the different examples in the [examples](./examples) folder
 - [cli.ts](./examples/cli.ts) - Example of using pino-loki as a CLI
 - [custom_timestamp.ts](./examples/custom_timestamp.ts) - Example of using pino-loki with nanoseconds timestamps
 
-# Options
+## Options
 
 - `batch` and `interval` are used to enable batching of logs. When enabled, logs are sent in batches every `interval` seconds. This is useful for reducing the number of requests to Loki.
 
