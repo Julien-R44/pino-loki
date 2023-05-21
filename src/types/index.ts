@@ -81,6 +81,11 @@ export interface LokiOptions {
   }
 
   /**
+   * Headers to be sent when pushing logs to Loki API
+   */
+  headers?: Record<string, string>
+
+  /**
    * Select log message's props to set as Loki labels
    */
   propsToLabels?: string[]

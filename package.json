@@ -105,7 +105,6 @@
   ],
   "prettier": "@julr/prettier-config",
   "dependencies": {
-    "axios": "^1.4.0",
     "commander": "^10.0.1",
     "got": "^12.6.0",
     "pino-abstract-transport": "^1.0.0",

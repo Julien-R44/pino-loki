@@ -45,10 +45,10 @@ export const createPinoLokiConfigFromArgs = () => {
     replaceTimestamp: opts.replaceTimestamp,
     labels: opts.labels ? JSON.parse(opts.labels) : undefined,
     propsToLabels: opts.propsLabels ? opts.propsLabels.split(',') : [],
-    basicAuth: {
-      username: opts.user,
-      password: opts.password,
-    },
+  }
+
+  if (opts.user && opts.password) {
+    config.basicAuth = { username: opts.user, password: opts.password }
   }
 
   return config

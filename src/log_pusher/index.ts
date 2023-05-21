@@ -1,7 +1,7 @@
-import axios, { AxiosInstance } from 'axios'
 import { PinoLog, LokiOptions } from '../types/index.js'
 import { LogBuilder } from '../log_builder/index.js'
 import debug from '../debug.js'
+import got, { Got, RequestError } from 'got'
 
 /**
  * Responsible for pushing logs to Loki
@@ -9,18 +9,20 @@ import debug from '../debug.js'
 export class LogPusher {
   #options: LokiOptions
   #logBuilder: LogBuilder
-  #client: AxiosInstance
+  #client: Got
 
   constructor(options: LokiOptions) {
     this.#options = options
-    this.#client = axios.create({
-      baseURL: this.#options.host,
-      timeout: this.#options.timeout,
-    })
 
-    if (this.#options.basicAuth) {
-      this.#client.defaults.auth = this.#options.basicAuth
-    }
+    this.#client = got.extend({
+      ...(this.#options.host && { prefixUrl: this.#options.host }),
+      timeout: { request: this.#options.timeout ?? 30000 },
+      headers: options.headers ?? {},
+      ...(this.#options.basicAuth && {
+        username: this.#options.basicAuth?.username,
+        password: this.#options.basicAuth?.password,
+      }),
+    })
 
     const propsToLabels = options.propsToLabels || []
     this.#logBuilder = new LogBuilder(propsToLabels)
@@ -30,23 +32,13 @@ export class LogPusher {
    * Handle push failures
    */
   #handleFailure(err: any) {
-    console.error('Got error when trying to send log to Loki, error output:', err)
     if (this.#options.silenceErrors === true) {
       return
     }
 
-    if (err.response) {
-      return console.error(
-        `Attempting to send log to Loki failed with status '${err.response.status}: ${
-          err.response.statusText
-        }' returned reason: ${JSON.stringify(err.response.data)}`,
-      )
-    }
-
-    if (err.isAxiosError === true) {
-      return console.error(
-        `Attempting to send log to Loki failed. Got an axios error, error code: '${err.code}' message: ${err.message}`,
-      )
+    if (err instanceof RequestError) {
+      console.error('Got error when trying to send log to Loki:', err.message)
+      return
     }
 
     console.error('Got unknown error when trying to send log to Loki, error output:', err)
@@ -67,7 +59,7 @@ export class LogPusher {
     debug(`[LogPusher] pushing ${lokiLogs.length} logs to Loki`)
 
     await this.#client
-      .post(`/loki/api/v1/push`, { streams: lokiLogs })
+      .post(`loki/api/v1/push`, { json: { streams: lokiLogs } })
       .catch(this.#handleFailure.bind(this))
 
     debug(`[LogPusher] pushed ${lokiLogs.length} logs to Loki`, { logs: lokiLogs })
