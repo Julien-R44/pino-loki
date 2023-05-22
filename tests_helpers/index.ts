@@ -1,4 +1,4 @@
-import { got } from 'got'
+import got from 'got'
 
 interface QueryRangeResponse<StreamType extends Record<string, string>> {
   status: string

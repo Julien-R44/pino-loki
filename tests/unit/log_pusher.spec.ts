@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { LogPusher } from '../../src/log_pusher/index.js'
+import { LogPusher } from '../../src/log_pusher/index'
 import nock from 'nock'
 
 test.group('LogPusher', (group) => {

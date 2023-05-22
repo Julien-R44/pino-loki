@@ -10,7 +10,7 @@
 
 import 'dotenv/config'
 import { pino } from 'pino'
-import { LokiOptions } from '../src/index.js'
+import { LokiOptions } from '../src/index'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()

@@ -1,7 +1,7 @@
-import type { LokiOptions } from './types/index.js'
+import type { LokiOptions } from './types/index'
 import { program } from 'commander'
-import pkg from '../package.json' assert { type: 'json' }
-import build from './index.js'
+import pkg from '../package.json'
+import build from './index'
 import pump from 'pump'
 
 /**
@@ -54,7 +54,10 @@ export const createPinoLokiConfigFromArgs = () => {
   return config
 }
 
-const config = createPinoLokiConfigFromArgs()
-const pinoLoki = build(config)
+function main() {
+  const config = createPinoLokiConfigFromArgs()
+  const pinoLoki = build(config)
+  pump(process.stdin, pinoLoki)
+}
 
-pump(process.stdin, pinoLoki)
+main()

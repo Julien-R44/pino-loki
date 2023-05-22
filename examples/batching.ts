@@ -4,7 +4,7 @@
 
 import 'dotenv/config'
 import { pino } from 'pino'
-import { LokiOptions } from '../src/types/index.js'
+import { LokiOptions } from '../src/types/index'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
@@ -28,15 +28,19 @@ const transport = pino.transport<LokiOptions>({
 
 const logger = pino(transport)
 
-// These logs will be batched and sent to loki after 2 seconds
-logger.info('Hello 1!')
-logger.info('Hello 2!')
-logger.info('Hello 3!')
+async function main() {
+  // These logs will be batched and sent to loki after 2 seconds
+  logger.info('Hello 1!')
+  logger.info('Hello 2!')
+  logger.info('Hello 3!')
 
-await new Promise((resolve) => setTimeout(resolve, 3000))
+  await new Promise((resolve) => setTimeout(resolve, 3000))
 
-// These logs will also be batched but sent immediately since
-// our main process is about to exit
-logger.info('Hello 4!')
-logger.info('Hello 5!')
-logger.info('Hello 6!')
+  // These logs will also be batched but sent immediately since
+  // our main process is about to exit
+  logger.info('Hello 4!')
+  logger.info('Hello 5!')
+  logger.info('Hello 6!')
+}
+
+main()

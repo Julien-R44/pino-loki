@@ -1,10 +1,7 @@
 import abstractTransportBuild from 'pino-abstract-transport'
-import { PinoLog, LokiOptions } from './types/index.js'
-import { LogPusher } from './log_pusher/index.js'
-import debug from './debug.js'
-
-// @ts-ignore
-const build = abstractTransportBuild as typeof abstractTransportBuild.default
+import { PinoLog, LokiOptions } from './types/index'
+import { LogPusher } from './log_pusher/index'
+import debug from './debug'
 
 /**
  * Resolves the options for the Pino Loki transport
@@ -30,7 +27,7 @@ function pinoLoki(userOptions: LokiOptions) {
   let batchInterval: NodeJS.Timer | undefined
   let pinoLogBuffer: PinoLog[] = []
 
-  return build(
+  return abstractTransportBuild(
     async (source) => {
       if (options.batching) {
         batchInterval = setInterval(async () => {

@@ -1,4 +1,4 @@
-import { LokiLog, LokiLogLevel, PinoLog } from '../types/index.js'
+import { LokiLog, LokiLogLevel, PinoLog } from '../types/index'
 
 const NANOSECONDS_LENGTH = 19
 

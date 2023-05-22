@@ -1,6 +1,6 @@
-import { PinoLog, LokiOptions } from '../types/index.js'
-import { LogBuilder } from '../log_builder/index.js'
-import debug from '../debug.js'
+import { PinoLog, LokiOptions } from '../types/index'
+import { LogBuilder } from '../log_builder/index'
+import debug from '../debug'
 import got, { Got, RequestError } from 'got'
 
 /**

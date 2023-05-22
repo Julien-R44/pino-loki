@@ -8,7 +8,7 @@
 
 import 'dotenv/config'
 import { pino } from 'pino'
-import pinoLoki from '../src/index.js'
+import pinoLoki from '../src/index'
 
 const logger = pino(
   { level: 'info' },

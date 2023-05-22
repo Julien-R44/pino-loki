@@ -1,10 +1,10 @@
 import { test } from '@japa/runner'
-import pinoLoki from '../../src/index.js'
+import pinoLoki from '../../src/index'
 import { pino } from 'pino'
-import { LokiClient } from '../../tests_helpers/index.js'
+import { LokiClient } from '../../tests_helpers/index'
 import { randomUUID } from 'crypto'
-import { sleep } from '../../src/utils/index.js'
-import { LokiOptions } from '../../src/types/index.js'
+import { sleep } from '../../src/utils/index'
+import { LokiOptions } from '../../src/types/index'
 
 const credentials = {
   host: process.env.LOKI_HOST!,
@@ -99,7 +99,7 @@ test.group('Loki integration', () => {
     const application = randomUUID()
 
     const logger = pino.transport<LokiOptions>({
-      target: '../../dist/index.mjs',
+      target: '../../dist/index.cjs',
 
       options: {
         ...credentials,
