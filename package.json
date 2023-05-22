@@ -105,7 +105,7 @@
   "prettier": "@julr/prettier-config",
   "dependencies": {
     "commander": "^10.0.1",
-    "got": "^12.6.0",
+    "got": "^11.8.6",
     "pino-abstract-transport": "^1.0.0",
     "pump": "^3.0.0"
   }
