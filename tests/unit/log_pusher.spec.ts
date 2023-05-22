@@ -3,6 +3,10 @@ import { LogPusher } from '../../src/log_pusher/index'
 import nock from 'nock'
 
 test.group('LogPusher', (group) => {
+  group.teardown(async () => {
+    nock.restore()
+  })
+
   group.each.teardown(async () => {
     nock.cleanAll()
   })
