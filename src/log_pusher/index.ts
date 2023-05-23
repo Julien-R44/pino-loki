@@ -37,7 +37,10 @@ export class LogPusher {
     }
 
     if (err instanceof RequestError) {
-      console.error('Got error when trying to send log to Loki:', err.message)
+      console.error(
+        'Got error when trying to send log to Loki:',
+        err.message + '\n' + err.response?.body,
+      )
       return
     }
 
