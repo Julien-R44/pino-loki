@@ -28,6 +28,10 @@ export class LogBuilder {
     )
   }
 
+  /**
+   * Builds a timestamp string from a Pino log object.
+   * @returns A string representing the timestamp in nanoseconds.
+   */
   #buildTimestamp(log: PinoLog, replaceTimestamp?: boolean): string {
     if (replaceTimestamp) {
       return (new Date().getTime() * 1000000).toString()
@@ -46,6 +50,18 @@ export class LogBuilder {
     return (time * missingFactor).toString()
   }
 
+  #buildLabelsFromProps(log: PinoLog) {
+    const labels: Record<string, string> = {}
+
+    for (const prop of this.#propsToLabel) {
+      if (log[prop]) {
+        labels[prop] = log[prop]
+      }
+    }
+
+    return labels
+  }
+
   /**
    * Build a loki log entry from a pino log
    */
@@ -54,19 +70,12 @@ export class LogBuilder {
     replaceTimestamp?: boolean,
     additionalLabels?: Record<string, string>,
   ): LokiLog {
-    const hostname = log.hostname
     const status = this.statusFromLevel(log.level)
+    const time = this.#buildTimestamp(log, replaceTimestamp)
+    const propsLabels = this.#buildLabelsFromProps(log)
 
+    const hostname = log.hostname
     log.hostname = undefined
-
-    let time = this.#buildTimestamp(log, replaceTimestamp)
-
-    const propsLabels: { [key: string]: any } = {}
-    for (const prop of this.#propsToLabel) {
-      if (log[prop]) {
-        propsLabels[prop] = log[prop]
-      }
-    }
 
     return {
       stream: {
