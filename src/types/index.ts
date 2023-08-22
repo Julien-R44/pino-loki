@@ -114,4 +114,9 @@ export interface LokiOptions {
    * Select log message's props to set as Loki labels
    */
   propsToLabels?: string[]
+
+  /**
+   * Convert arrays in log messages to objects with index as key
+   */
+  convertArrays?: boolean
 }
