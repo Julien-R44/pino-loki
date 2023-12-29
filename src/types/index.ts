@@ -73,6 +73,21 @@ export interface LokiOptions {
   }
 
   /**
+   * Custom pino to loki log level mapping, merged with the default one.
+   * @default
+   *    10: LokiLogLevel.Debug,
+        20: LokiLogLevel.Debug,
+        30: LokiLogLevel.Info,
+        40: LokiLogLevel.Warning,
+        50: LokiLogLevel.Error,
+        60: LokiLogLevel.Critical
+   */
+
+  levelMap?: {
+    [key: number]: LokiLogLevel
+  }
+
+  /**
    * Basic auth credentials to be used when sending logs to Loki
    */
   basicAuth?: {

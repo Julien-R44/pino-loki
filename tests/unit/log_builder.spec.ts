@@ -1,5 +1,5 @@
 import { test } from '@japa/runner'
-import { PinoLog } from '../../src/types/index'
+import { LokiLogLevel, PinoLog } from '../../src/types/index'
 import { LogBuilder } from '../../src/log_builder/index'
 import { sleep } from '../../src/utils/index'
 
@@ -17,6 +17,19 @@ test.group('Log Builder', () => {
 
     assert.deepEqual(logBuilder.statusFromLevel(10), 'debug')
     assert.deepEqual(logBuilder.statusFromLevel(20), 'debug')
+    assert.deepEqual(logBuilder.statusFromLevel(30), 'info')
+    assert.deepEqual(logBuilder.statusFromLevel(40), 'warning')
+    assert.deepEqual(logBuilder.statusFromLevel(50), 'error')
+    assert.deepEqual(logBuilder.statusFromLevel(60), 'critical')
+  })
+
+  test('Custom levels', ({ assert }) => {
+    const logBuilder = new LogBuilder({
+      levelMap: { '5': LokiLogLevel.Debug, '20': LokiLogLevel.Info },
+    })
+    assert.deepEqual(logBuilder.statusFromLevel(5), 'debug') // custom
+    assert.deepEqual(logBuilder.statusFromLevel(10), 'debug')
+    assert.deepEqual(logBuilder.statusFromLevel(20), 'info') // override
     assert.deepEqual(logBuilder.statusFromLevel(30), 'info')
     assert.deepEqual(logBuilder.statusFromLevel(40), 'warning')
     assert.deepEqual(logBuilder.statusFromLevel(50), 'error')
@@ -66,7 +79,7 @@ test.group('Log Builder', () => {
   })
 
   test('Props to label', ({ assert }) => {
-    const logBuilder = new LogBuilder(['appId', 'buildId'])
+    const logBuilder = new LogBuilder({ propsToLabels: ['appId', 'buildId'] })
 
     const log: PinoLog = {
       hostname: 'localhost',
