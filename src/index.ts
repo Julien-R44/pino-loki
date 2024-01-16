@@ -26,7 +26,7 @@ function pinoLoki(userOptions: LokiOptions) {
 
   debug(`[PinoLoki] initialized with options: ${JSON.stringify(options)}`)
 
-  let batchInterval: NodeJS.Timer | undefined
+  let batchInterval: NodeJS.Timeout | undefined
   let pinoLogBuffer: PinoLog[] = []
 
   return abstractTransportBuild(
