@@ -39,21 +39,29 @@ export interface LokiOptions {
 
   /**
    * Timeout for request to Loki
+   *
+   * @default 30_000
    */
   timeout?: number
 
   /**
    * If false, errors will be displayed in the console
+   *
+   * @default false
    */
   silenceErrors?: boolean
 
   /**
    * Should logs be sent in batch mode
+   *
+   * @default true
    */
   batching?: boolean
 
   /**
    * The interval at which batched logs are sent in seconds
+   *
+   * @default 5
    */
   interval?: number
 
@@ -62,6 +70,8 @@ export interface LokiOptions {
    *
    * Be careful when using batch mode, that will cause all logs
    * to have the same timestamp
+   *
+   * @default false
    */
   replaceTimestamp?: boolean
 
