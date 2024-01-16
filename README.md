@@ -11,7 +11,7 @@ Pino-loki is for Pino v7.0.0 and above, so the module can be configured to opera
 
 ## Usage
 
-## In a worker thread
+### In a worker thread
 
 ```ts
 import pino from 'pino'
@@ -35,9 +35,78 @@ const logger = pino(transport);
 logger.error({ foo: 'bar' })
 ```
 
-## In main process
+### In main process
 
 See [the example](./examples/module_usage.ts)
+
+### Library options
+
+#### `labels`
+
+Additional labels to be added to all Loki logs. This can be used to add additional context to all logs, such as the application name, environment, etc.
+
+#### `propsToLabels`
+
+A list of properties to be converted to loki labels. 
+
+#### `levelMap`
+
+A map of pino log levels to Loki log levels. This can be used to map pino log levels to different Loki log levels. This is the default map. Left is pino log level, right is Loki log level.
+
+```ts
+{
+  10: LokiLogLevel.Debug,
+  20: LokiLogLevel.Debug,
+  30: LokiLogLevel.Info,
+  40: LokiLogLevel.Warning,
+  50: LokiLogLevel.Error,
+  60: LokiLogLevel.Critical,
+},
+```
+
+#### `host`
+
+The URL for Loki. This is required.
+
+#### `basicAuth`
+
+Basic auth credentials for Loki. An object with the following shape:
+
+```ts
+{
+  username: "username",
+  password: "password",
+}
+```
+#### `headers`
+
+A list of headers to be sent to Loki. This can be useful for adding the `X-Scope-OrgID` header for Grafana Cloud Loki :
+
+```ts
+{
+  "X-Scope-OrgID": "your-id",
+})
+```
+
+#### `timeout`
+
+A max timeout in miliseconds when sending logs to Loki. Defaults to `30_000`.
+
+#### `silenceErrors`
+
+If false, errors when sending logs to Loki will be displayed in the console. Defaults to `false`.
+
+#### `batching`
+
+Should logs be sent in batch mode. Defaults to `true`.
+
+#### `interval`
+
+The interval at which batched logs are sent in seconds. Defaults to `5`.
+
+#### `replaceTimestamp` 
+
+Defaults to `false`. If true, the timestamp in the pino log will be replaced with `Date.now()`. Be careful when using this option with `batching` enabled, as the logs will be sent in batches, and the timestamp will be the time of the batch, not the time of the log.
 
 ## CLI usage
 ```shell
@@ -72,11 +141,6 @@ Feel free to explore the different examples in the [examples](./examples) folder
 - [batching.ts](./examples/batching.ts) - Example of using pino-loki in a worker thread with batching enabled
 - [cli.ts](./examples/cli.ts) - Example of using pino-loki as a CLI
 - [custom_timestamp.ts](./examples/custom_timestamp.ts) - Example of using pino-loki with nanoseconds timestamps
-
-## Options
-
-- `batch` and `interval` are used to enable batching of logs. When enabled, logs are sent in batches every `interval` seconds. This is useful for reducing the number of requests to Loki.
-
 
 # Limitations and considerations
 ## Out-of-order errors
