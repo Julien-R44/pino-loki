@@ -1,5 +1,5 @@
 import abstractTransportBuild from 'pino-abstract-transport'
-import { PinoLog, LokiOptions } from './types/index'
+import { PinoLog, LokiOptions, LokiLogLevel } from './types/index'
 import { LogPusher } from './log_pusher/index'
 import debug from './debug'
 
@@ -68,3 +68,4 @@ function pinoLoki(userOptions: LokiOptions) {
 
 export default pinoLoki
 export type { LokiOptions }
+export { LokiLogLevel }

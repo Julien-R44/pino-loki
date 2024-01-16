@@ -24,8 +24,10 @@ export class LogPusher {
       }),
     })
 
-    const propsToLabels = options.propsToLabels || []
-    this.#logBuilder = new LogBuilder(propsToLabels)
+    this.#logBuilder = new LogBuilder({
+      levelMap: options.levelMap,
+      propsToLabels: options.propsToLabels,
+    })
   }
 
   /**

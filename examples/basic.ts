@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { pino } from 'pino'
-import { LokiOptions } from '../src/types/index'
+import { LokiOptions, LokiLogLevel } from '../src/types/index'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
@@ -9,7 +9,11 @@ const transport = pino.transport<LokiOptions>({
   options: {
     // These labels will be added to every log
     labels: { application: 'MY-APP' },
-
+    // custom log levels
+    levelMap: {
+      '5': LokiLogLevel.Debug, // Add a custom log level
+      '10': LokiLogLevel.Info, // Override a default mapping
+    },
     // Credentials for our Loki instance
     host: process.env.LOKI_HOST!,
     basicAuth: {

@@ -1,22 +1,19 @@
-import { LokiLog, LokiLogLevel, PinoLog } from '../types/index'
+import { LokiLog, LokiLogLevel, PinoLog, LokiOptions } from '../types/index'
 
 const NANOSECONDS_LENGTH = 19
+
+type BuilderOptions = Pick<LokiOptions, 'propsToLabels' | 'levelMap'>
 
 /**
  * Converts a Pino log to a Loki log
  */
 export class LogBuilder {
-  #propsToLabel: string[]
+  #propsToLabels: string[]
+  #levelMap: { [key: number]: LokiLogLevel }
 
-  constructor(propsToLabel: string[] = []) {
-    this.#propsToLabel = propsToLabel
-  }
-
-  /**
-   * Convert a level to a human readable status
-   */
-  public statusFromLevel(level: number) {
-    return (
+  constructor(options?: BuilderOptions) {
+    this.#propsToLabels = options?.propsToLabels || []
+    this.#levelMap = Object.assign(
       {
         10: LokiLogLevel.Debug,
         20: LokiLogLevel.Debug,
@@ -24,10 +21,17 @@ export class LogBuilder {
         40: LokiLogLevel.Warning,
         50: LokiLogLevel.Error,
         60: LokiLogLevel.Critical,
-      }[level] || LokiLogLevel.Info
+      },
+      options?.levelMap,
     )
   }
 
+  /**
+   * Convert a level to a human readable status
+   */
+  public statusFromLevel(level: number) {
+    return this.#levelMap[level] || LokiLogLevel.Info
+  }
   /**
    * Builds a timestamp string from a Pino log object.
    * @returns A string representing the timestamp in nanoseconds.
@@ -53,7 +57,7 @@ export class LogBuilder {
   #buildLabelsFromProps(log: PinoLog) {
     const labels: Record<string, string> = {}
 
-    for (const prop of this.#propsToLabel) {
+    for (const prop of this.#propsToLabels) {
       if (log[prop]) {
         labels[prop] = log[prop]
       }
