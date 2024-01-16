@@ -1,4 +1,5 @@
 import 'dotenv/config'
+
 import { assert } from '@japa/assert'
 import { specReporter } from '@japa/spec-reporter'
 import { processCliArgs, configure, run } from '@japa/runner'
@@ -30,7 +31,7 @@ configure({
     {
       name: 'integration',
       files: ['tests/integration/**/*.spec.ts'],
-      timeout: 10000,
+      timeout: 10_000,
     },
   ],
 })

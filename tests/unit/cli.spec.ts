@@ -1,4 +1,5 @@
 import { test } from '@japa/runner'
+
 import { createPinoLokiConfigFromArgs } from '../../src/cli'
 
 test.group('Cli', () => {

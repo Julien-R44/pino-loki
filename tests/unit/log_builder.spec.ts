@@ -1,13 +1,15 @@
 import { test } from '@japa/runner'
-import { LokiLogLevel, PinoLog } from '../../src/types/index'
-import { LogBuilder } from '../../src/log_builder/index'
+
 import { sleep } from '../../src/utils/index'
+import { LokiLogLevel } from '../../src/types/index'
+import type { PinoLog } from '../../src/types/index'
+import { LogBuilder } from '../../src/log_builder/index'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()
 
 function nanoseconds() {
-  let diffNs = process.hrtime(loadNs)
+  const diffNs = process.hrtime(loadNs)
   return BigInt(loadMs) * BigInt(1e6) + BigInt(diffNs[0] * 1e9 + diffNs[1])
 }
 
@@ -56,7 +58,7 @@ test.group('Log Builder', () => {
     assert.deepEqual(lokiLog.stream.hostname, 'localhost')
     assert.deepEqual(lokiLog.stream.application, 'MY-APP')
     assert.deepEqual(lokiLog.values[0][1], JSON.stringify(log))
-    assert.deepEqual(+lokiLog.values[0][0], currentTime * 1000000)
+    assert.deepEqual(+lokiLog.values[0][0], currentTime * 1_000_000)
   })
 
   test('Replace timestamps', async ({ assert }) => {
@@ -73,9 +75,9 @@ test.group('Log Builder', () => {
     await sleep(1000)
 
     const lokiLog = logBuilder.build(log, true, { application: 'MY-APP' })
-    const currentTime = new Date().getTime() * 1000000
+    const currentTime = new Date().getTime() * 1_000_000
 
-    assert.closeTo(+lokiLog.values[0][0], +currentTime, 10000000)
+    assert.closeTo(+lokiLog.values[0][0], +currentTime, 10_000_000)
   })
 
   test('Props to label', ({ assert }) => {

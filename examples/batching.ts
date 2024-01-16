@@ -3,8 +3,10 @@
  */
 
 import 'dotenv/config'
+
 import { pino } from 'pino'
-import { LokiOptions } from '../src/types/index'
+
+import type { LokiOptions } from '../src/types/index'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"

@@ -1,8 +1,9 @@
-import type { LokiOptions } from './types/index'
-import { program } from 'commander'
-import pkg from '../package.json'
-import build from './index'
 import pump from 'pump'
+import { program } from 'commander'
+
+import build from './index'
+import pkg from '../package.json'
+import type { LokiOptions } from './types/index'
 
 /**
  * Parse cli arguments with commander

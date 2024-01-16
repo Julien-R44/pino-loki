@@ -2,10 +2,10 @@
  * Different log levels detected by loki
  */
 export enum LokiLogLevel {
-  Debug = 'debug',
   Info = 'info',
-  Warning = 'warning',
+  Debug = 'debug',
   Error = 'error',
+  Warning = 'warning',
   Critical = 'critical',
 }
 

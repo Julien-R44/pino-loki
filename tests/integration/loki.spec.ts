@@ -1,10 +1,11 @@
-import { test } from '@japa/runner'
-import pinoLoki from '../../src/index'
 import { pino } from 'pino'
-import { LokiClient } from '../../tests_helpers/index'
-import { randomUUID } from 'crypto'
+import { test } from '@japa/runner'
+import { randomUUID } from 'node:crypto'
+
+import pinoLoki from '../../src/index'
 import { sleep } from '../../src/utils/index'
-import { LokiOptions } from '../../src/types/index'
+import { LokiClient } from '../../tests_helpers/index'
+import type { LokiOptions } from '../../src/types/index'
 
 const credentials = {
   host: process.env.LOKI_HOST!,
@@ -86,7 +87,7 @@ test.group('Loki integration', () => {
     logger.fatal({ test: 3 })
 
     await sleep(1200)
-    let result = await LokiClient.getLogs(`{application="${application}"}`)
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
 
     assert.equal(result.status, 'success')
     assert.equal(result.data.result.length, 3)

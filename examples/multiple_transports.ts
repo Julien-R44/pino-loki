@@ -1,4 +1,5 @@
 import 'dotenv/config'
+
 import { pino } from 'pino'
 
 const transport = pino.transport({

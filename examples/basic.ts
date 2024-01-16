@@ -1,6 +1,9 @@
 import 'dotenv/config'
+
 import { pino } from 'pino'
-import { LokiOptions, LokiLogLevel } from '../src/types/index'
+
+import { LokiLogLevel } from '../src/types/index'
+import type { LokiOptions } from '../src/types/index'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"

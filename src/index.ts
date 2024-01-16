@@ -1,7 +1,9 @@
 import abstractTransportBuild from 'pino-abstract-transport'
-import { PinoLog, LokiOptions, LokiLogLevel } from './types/index'
-import { LogPusher } from './log_pusher/index'
+
 import debug from './debug'
+import { LokiLogLevel } from './types/index'
+import { LogPusher } from './log_pusher/index'
+import type { PinoLog, LokiOptions } from './types/index'
 
 /**
  * Resolves the options for the Pino Loki transport
@@ -9,7 +11,7 @@ import debug from './debug'
 function resolveOptions(options: LokiOptions) {
   return {
     ...options,
-    timeout: options.timeout ?? 30000,
+    timeout: options.timeout ?? 30_000,
     silenceErrors: options.silenceErrors ?? false,
     batching: options.batching ?? true,
     interval: options.interval ?? 5,
@@ -42,7 +44,7 @@ function pinoLoki(userOptions: LokiOptions) {
         }, options.interval! * 1000)
       }
 
-      for await (let obj of source) {
+      for await (const obj of source) {
         if (options.batching) {
           pinoLogBuffer.push(obj)
           continue

@@ -9,6 +9,7 @@
  */
 
 import 'dotenv/config'
+
 import { pino } from 'pino'
 
 const logger = pino({ level: 'info' }).child({ application: 'MY-APP' })

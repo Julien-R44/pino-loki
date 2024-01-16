@@ -1,7 +1,9 @@
-import { PinoLog, LokiOptions } from '../types/index'
-import { LogBuilder } from '../log_builder/index'
+import type { Got } from 'got'
+import got, { RequestError } from 'got'
+
 import debug from '../debug'
-import got, { Got, RequestError } from 'got'
+import { LogBuilder } from '../log_builder/index'
+import type { PinoLog, LokiOptions } from '../types/index'
 
 /**
  * Responsible for pushing logs to Loki
@@ -16,7 +18,7 @@ export class LogPusher {
 
     this.#client = got.extend({
       ...(this.#options.host && { prefixUrl: this.#options.host }),
-      timeout: { request: this.#options.timeout ?? 30000 },
+      timeout: { request: this.#options.timeout ?? 30_000 },
       headers: options.headers ?? {},
       ...(this.#options.basicAuth && {
         username: this.#options.basicAuth?.username,
@@ -52,7 +54,7 @@ export class LogPusher {
   /**
    * Push one or multiples logs entries to Loki
    */
-  public async push(logs: PinoLog[] | PinoLog) {
+  async push(logs: PinoLog[] | PinoLog) {
     if (!Array.isArray(logs)) {
       logs = [logs]
     }

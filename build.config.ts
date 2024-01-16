@@ -1,5 +1,5 @@
 import { defineBuildConfig } from 'unbuild'
-import { readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 
 export default defineBuildConfig({
   entries: ['src/index', 'src/cli'],

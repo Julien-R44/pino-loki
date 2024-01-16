@@ -9,14 +9,16 @@
  */
 
 import 'dotenv/config'
+
 import { pino } from 'pino'
-import { LokiOptions } from '../src/index'
+
+import type { LokiOptions } from '../src/index'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()
 
 function nanoseconds() {
-  let diffNs = process.hrtime(loadNs)
+  const diffNs = process.hrtime(loadNs)
   return BigInt(loadMs) * BigInt(1e6) + BigInt(diffNs[0] * 1e9 + diffNs[1])
 }
 

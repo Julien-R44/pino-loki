@@ -1,4 +1,5 @@
-import { LokiLog, LokiLogLevel, PinoLog, LokiOptions } from '../types/index'
+import { LokiLogLevel } from '../types/index'
+import type { LokiLog, PinoLog, LokiOptions } from '../types/index'
 
 const NANOSECONDS_LENGTH = 19
 
@@ -32,7 +33,7 @@ export class LogBuilder {
    */
   #buildTimestamp(log: PinoLog, replaceTimestamp?: boolean): string {
     if (replaceTimestamp) {
-      return (new Date().getTime() * 1000000).toString()
+      return (new Date().getTime() * 1_000_000).toString()
     }
 
     const time = log.time || Date.now()
@@ -63,14 +64,14 @@ export class LogBuilder {
   /**
    * Convert a level to a human readable status
    */
-  public statusFromLevel(level: number) {
+  statusFromLevel(level: number) {
     return this.#levelMap[level] || LokiLogLevel.Info
   }
 
   /**
    * Build a loki log entry from a pino log
    */
-  public build(
+  build(
     log: PinoLog,
     replaceTimestamp?: boolean,
     additionalLabels?: Record<string, string>,
