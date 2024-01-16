@@ -27,12 +27,6 @@ export class LogBuilder {
   }
 
   /**
-   * Convert a level to a human readable status
-   */
-  public statusFromLevel(level: number) {
-    return this.#levelMap[level] || LokiLogLevel.Info
-  }
-  /**
    * Builds a timestamp string from a Pino log object.
    * @returns A string representing the timestamp in nanoseconds.
    */
@@ -64,6 +58,13 @@ export class LogBuilder {
     }
 
     return labels
+  }
+
+  /**
+   * Convert a level to a human readable status
+   */
+  public statusFromLevel(level: number) {
+    return this.#levelMap[level] || LokiLogLevel.Info
   }
 
   /**
