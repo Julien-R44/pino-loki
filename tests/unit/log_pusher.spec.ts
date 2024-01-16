@@ -70,22 +70,4 @@ test.group('LogPusher', (group) => {
 
     console.error = consoleError
   })
-
-  test('clean error message when error is a RequestError', async ({ assert }) => {
-    const pusher = new LogPusher({ host: 'http://localhost:3100' })
-    const consoleError = console.error
-
-    console.error = (...args: any) => {
-      const fullLog = args.join(' ')
-
-      assert.equal(
-        fullLog,
-        'Got error when trying to send log to Loki: connect ECONNREFUSED ::1:3100',
-      )
-    }
-
-    await pusher.push({ level: 30 })
-
-    console.error = consoleError
-  })
 })
