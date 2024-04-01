@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { sleep } from '../../src/utils/index'
 import { LokiLogLevel } from '../../src/types/index'
 import type { PinoLog } from '../../src/types/index'
-import { LogBuilder } from '../../src/log_builder/index'
+import { LogBuilder, convertArray } from '../../src/log_builder/index'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()
@@ -128,5 +128,65 @@ test.group('Log Builder', () => {
     const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
 
     assert.deepEqual(lokiLog.values[0][0], now + '000000')
+  })
+
+  test('test converting arrays to indexed keys', ({ assert }) => {
+    assert.equal(convertArray(1), 1)
+    assert.equal(convertArray('hello'), 'hello')
+    assert.equal(convertArray(true), true)
+    assert.equal(convertArray(false), false)
+    assert.equal(convertArray(null), null)
+    assert.equal(convertArray(undefined), undefined)
+    assert.deepEqual(convertArray({}), {})
+
+    assert.deepEqual(convertArray({ a: 1, b: 2, c: { d: 'e' } }), { a: 1, b: 2, c: { d: 'e' } })
+    assert.deepEqual(convertArray({ a: ['x', 'y', 'z'], b: 4 }), {
+      a: { 0: 'x', 1: 'y', 2: 'z' },
+      b: 4,
+    })
+    assert.deepEqual(convertArray(['a', [{ b: 1, c: 2 }], { d: 'e' }]), {
+      0: 'a',
+      1: {
+        0: {
+          b: 1,
+          c: 2,
+        },
+      },
+      2: {
+        d: 'e',
+      },
+    })
+
+    const logBuilder = new LogBuilder({})
+
+    const log: PinoLog = {
+      level: 30,
+      msg: 'hello world',
+      additional: [
+        ['x', 'y', 'z'],
+        {
+          a: 1,
+          b: 2,
+        },
+      ],
+    }
+
+    const lokiLog = logBuilder.build(log, true, {}, true)
+    const parsed = JSON.parse(lokiLog.values[0][1])
+    assert.deepEqual(parsed, {
+      level: 30,
+      msg: 'hello world',
+      additional: {
+        0: {
+          0: 'x',
+          1: 'y',
+          2: 'z',
+        },
+        1: {
+          a: 1,
+          b: 2,
+        },
+      },
+    })
   })
 })

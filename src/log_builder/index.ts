@@ -8,7 +8,7 @@ type BuilderOptions = Pick<LokiOptions, 'propsToLabels' | 'levelMap'>
 /**
  * Recursively converts an array to an object with index position as key
  */
-function convertArray(data: unknown): unknown {
+export function convertArray(data: unknown): unknown {
   if (typeof data !== 'object' || !data) {
     return data
   }
