@@ -1,11 +1,8 @@
-networks:
-  loki:
-
 services:
   loki:
     image: grafana/loki:2.8.0
     ports:
-      - "3100:3100"
+      - '3100:3100'
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - loki
@@ -36,6 +33,9 @@ services:
         /run.sh
     image: grafana/grafana:latest
     ports:
-      - "3000:3000"
+      - '3000:3000'
     networks:
       - loki
+
+networks:
+  loki:

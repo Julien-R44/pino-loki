@@ -142,6 +142,47 @@ Feel free to explore the different examples in the [examples](./examples) folder
 - [cli.ts](./examples/cli.ts) - Example of using pino-loki as a CLI
 - [custom_timestamp.ts](./examples/custom_timestamp.ts) - Example of using pino-loki with nanoseconds timestamps
 
+## Usage in AdonisJS
+
+Since AdonisJS use Pino as the default logger, you can use pino-loki easily by adding a new transport to the logger, in the `config/logger.ts` file:
+
+```ts
+import type { LokiOptions } from 'pino-loki'
+import app from '@adonisjs/core/services/app'
+import { defineConfig, targets } from '@adonisjs/core/logger'
+
+import env from '#start/env'
+
+const loggerConfig = defineConfig({
+  default: 'app',
+
+  loggers: {
+    app: {
+      enabled: true,
+      name: env.get('APP_NAME'),
+      level: env.get('LOG_LEVEL'),
+      transport: {
+        targets: targets()
+          .push({
+            target: 'pino-loki',
+            options: {
+              labels: { application: 'MY-APP' },
+              host: env.get('LOKI_HOST'),
+              basicAuth: {
+                username: env.get('LOKI_USERNAME'),
+                password: env.get('LOKI_PASSWORD'),
+              },
+            } satisfies LokiOptions,
+          })
+          .toArray(),
+      },
+    },
+  },
+})
+```
+
+And you should be good to go! You can check the our [full example](./examples/adonisjs/) for more details.
+
 # Limitations and considerations
 ## Out-of-order errors
 Out-of-order Loki errors can occur due to the asynchronous nature of Pino. The fix to this is to allow for out-of-order logs in the Loki configuration. The reason why Loki doesn't have this enabled by default is because Promtail accounts for ordering constraints, however the same issue can also happen with promtail in high-load or when working with distributed networks.
