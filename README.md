@@ -181,7 +181,7 @@ const loggerConfig = defineConfig({
 })
 ```
 
-And you should be good to go! You can check the our [full example](./examples/adonisjs/) for more details.
+And you should be good to go! You can check our [full example](./examples/adonisjs/) for more details.
 
 # Limitations and considerations
 ## Out-of-order errors
