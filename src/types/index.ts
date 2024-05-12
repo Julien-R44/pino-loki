@@ -117,6 +117,8 @@ export interface LokiOptions {
 
   /**
    * Convert arrays in log messages to objects with index as key
+   *
+   * @default false
    */
   convertArrays?: boolean
 }
