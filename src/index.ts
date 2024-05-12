@@ -17,6 +17,7 @@ function resolveOptions(options: LokiOptions) {
     interval: options.interval ?? 5,
     replaceTimestamp: options.replaceTimestamp ?? false,
     propsToLabels: options.propsToLabels ?? [],
+    convertArrays: options.convertArrays ?? false,
   }
 }
 

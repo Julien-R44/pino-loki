@@ -49,6 +49,22 @@ export class LogBuilder {
     return (time * missingFactor).toString()
   }
 
+  /**
+   * Stringify the log object. If convertArrays is true then it will convert
+   * arrays to objects with indexes as keys.
+   */
+  #stringifyLog(log: PinoLog, convertArrays?: boolean): string {
+    return JSON.stringify(log, (_, value) => {
+      if (!convertArrays) return value
+
+      if (Array.isArray(value)) {
+        return Object.fromEntries(value.map((value, index) => [index, value]))
+      }
+
+      return value
+    })
+  }
+
   #buildLabelsFromProps(log: PinoLog) {
     const labels: Record<string, string> = {}
 
@@ -71,26 +87,27 @@ export class LogBuilder {
   /**
    * Build a loki log entry from a pino log
    */
-  build(
-    log: PinoLog,
-    replaceTimestamp?: boolean,
-    additionalLabels?: Record<string, string>,
-  ): LokiLog {
-    const status = this.statusFromLevel(log.level)
-    const time = this.#buildTimestamp(log, replaceTimestamp)
-    const propsLabels = this.#buildLabelsFromProps(log)
+  build(options: {
+    log: PinoLog
+    replaceTimestamp?: boolean
+    additionalLabels?: Record<string, string>
+    convertArrays?: boolean
+  }): LokiLog {
+    const status = this.statusFromLevel(options.log.level)
+    const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
+    const propsLabels = this.#buildLabelsFromProps(options.log)
 
-    const hostname = log.hostname
-    log.hostname = undefined
+    const hostname = options.log.hostname
+    options.log.hostname = undefined
 
     return {
       stream: {
         level: status,
         hostname,
-        ...additionalLabels,
+        ...options.additionalLabels,
         ...propsLabels,
       },
-      values: [[time, JSON.stringify(log)]],
+      values: [[time, this.#stringifyLog(options.log, options.convertArrays)]],
     }
   }
 }
