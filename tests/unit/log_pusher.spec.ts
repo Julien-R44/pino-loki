@@ -1,7 +1,7 @@
 import nock from 'nock'
 import { test } from '@japa/runner'
 
-import { LogPusher } from '../../src/log_pusher/index'
+import { LogPusher } from '../../src/log_pusher'
 
 test.group('LogPusher', (group) => {
   group.teardown(async () => {

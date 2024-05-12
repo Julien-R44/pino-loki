@@ -3,7 +3,7 @@ import { program } from 'commander'
 
 import build from './index'
 import pkg from '../package.json'
-import type { LokiOptions } from './types/index'
+import type { LokiOptions } from './types'
 
 program
   .version(pkg.version)

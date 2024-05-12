@@ -3,9 +3,9 @@ import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
 
 import pinoLoki from '../../src/index'
-import { sleep } from '../../src/utils/index'
-import { LokiClient } from '../../tests_helpers/index'
-import type { LokiOptions } from '../../src/types/index'
+import { sleep } from '../../src/utils'
+import { LokiClient } from '../helpers'
+import type { LokiOptions } from '../../src/types'
 
 const credentials = {
   host: process.env.LOKI_HOST!,

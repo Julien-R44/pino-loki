@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
 
-import { sleep } from '../../src/utils/index'
-import { LokiLogLevel } from '../../src/types/index'
-import type { PinoLog } from '../../src/types/index'
-import { LogBuilder } from '../../src/log_builder/index'
+import { sleep } from '../../src/utils'
+import { LokiLogLevel } from '../../src/types'
+import type { PinoLog } from '../../src/types'
+import { LogBuilder } from '../../src/log_builder'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()

@@ -1,9 +1,9 @@
 import type { Got } from 'got'
 import got, { RequestError } from 'got'
 
-import debug from '../debug'
-import { LogBuilder } from '../log_builder/index'
-import type { PinoLog, LokiOptions } from '../types/index'
+import debug from './debug'
+import { LogBuilder } from './log_builder'
+import type { PinoLog, LokiOptions } from './types'
 
 /**
  * Responsible for pushing logs to Loki
