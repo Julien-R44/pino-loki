@@ -131,7 +131,7 @@ Options:
   -s, --silenceErrors            If false, errors will be displayed in the console
   -r, --replaceTimestamp         Replace pino logs timestamps with Date.now()
   -l, --labels <label>           Additional labels to be added to all Loki logs
-  -c, --convertArrays            If true, arrays will be converted to objects
+  -a, --convertArrays            If true, arrays will be converted to objects
   -pl, --propsLabels <labels>    Fields in log line to convert to Loki labels (comma separated values)
   --no-stdout                    Disable output to stdout
   -h, --help                     display help for command
