@@ -108,6 +108,10 @@ The interval at which batched logs are sent in seconds. Defaults to `5`.
 
 Defaults to `false`. If true, the timestamp in the pino log will be replaced with `Date.now()`. Be careful when using this option with `batching` enabled, as the logs will be sent in batches, and the timestamp will be the time of the batch, not the time of the log.
 
+#### `convertArrays`
+
+Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
+
 ## CLI usage
 ```shell
 npm install -g pino-loki
@@ -127,6 +131,7 @@ Options:
   -s, --silenceErrors            If false, errors will be displayed in the console
   -r, --replaceTimestamp         Replace pino logs timestamps with Date.now()
   -l, --labels <label>           Additional labels to be added to all Loki logs
+  -c, --convertArrays            If true, arrays will be converted to objects
   -pl, --propsLabels <labels>    Fields in log line to convert to Loki labels (comma separated values)
   --no-stdout                    Disable output to stdout
   -h, --help                     display help for command
