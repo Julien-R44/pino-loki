@@ -50,8 +50,12 @@ test.group('Log Builder', () => {
       v: 1,
     }
 
-    const lokiLog = logBuilder.build(log, false, {
-      application: 'MY-APP',
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: false,
+      additionalLabels: {
+        application: 'MY-APP',
+      },
     })
 
     assert.deepEqual(lokiLog.stream.level, 'info')
@@ -74,7 +78,11 @@ test.group('Log Builder', () => {
 
     await sleep(1000)
 
-    const lokiLog = logBuilder.build(log, true, { application: 'MY-APP' })
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: true,
+      additionalLabels: { application: 'MY-APP' },
+    })
     const currentTime = new Date().getTime() * 1_000_000
 
     assert.closeTo(+lokiLog.values[0][0], +currentTime, 10_000_000)
@@ -92,7 +100,11 @@ test.group('Log Builder', () => {
       appId: 123,
       buildId: 'aaaa',
     }
-    const lokiLog = logBuilder.build(log, true, { application: 'MY-APP' })
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: true,
+      additionalLabels: { application: 'MY-APP' },
+    })
     assert.equal(lokiLog.stream.appId, 123)
     assert.equal(lokiLog.stream.buildId, 'aaaa')
   })
@@ -102,14 +114,11 @@ test.group('Log Builder', () => {
 
     const now = nanoseconds().toString()
 
-    const log: PinoLog = {
-      hostname: 'localhost',
-      level: 30,
-      msg: 'hello world',
-      time: now,
-    }
-
-    const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
+    const lokiLog = logBuilder.build({
+      log: { hostname: 'localhost', level: 30, msg: 'hello world', time: now },
+      replaceTimestamp: false,
+      additionalLabels: { application: 'MY-APP' },
+    })
     assert.deepEqual(lokiLog.values[0][0], now)
   })
 
@@ -118,14 +127,11 @@ test.group('Log Builder', () => {
 
     const now = new Date().getTime().toString()
 
-    const log: PinoLog = {
-      hostname: 'localhost',
-      level: 30,
-      msg: 'hello world',
-      time: now,
-    }
-
-    const lokiLog = logBuilder.build(log, false, { application: 'MY-APP' })
+    const lokiLog = logBuilder.build({
+      log: { hostname: 'localhost', level: 30, msg: 'hello world', time: now },
+      replaceTimestamp: false,
+      additionalLabels: { application: 'MY-APP' },
+    })
 
     assert.deepEqual(lokiLog.values[0][0], now + '000000')
   })
@@ -133,49 +139,28 @@ test.group('Log Builder', () => {
   test('convert arrays to indexed keys', ({ assert }) => {
     const logBuilder = new LogBuilder()
 
-    const log1 = logBuilder.build(
-      {
-        level: 30,
-        msg: 'hello world',
-        additional: [['x', 'y', 'z'], { a: 1, b: 2 }],
-      },
-      true,
-      {},
-      true,
-    )
+    const log1 = logBuilder.build({
+      log: { level: 30, msg: 'hello world', additional: [['x', 'y', 'z'], { a: 1, b: 2 }] },
+      replaceTimestamp: true,
+      convertArrays: true,
+    })
 
     assert.deepEqual(JSON.parse(log1.values[0][1]), {
       level: 30,
       msg: 'hello world',
-      additional: {
-        0: { 0: 'x', 1: 'y', 2: 'z' },
-        1: { a: 1, b: 2 },
-      },
+      additional: { 0: { 0: 'x', 1: 'y', 2: 'z' }, 1: { a: 1, b: 2 } },
     })
 
-    const log2 = logBuilder.build(
-      {
-        level: 30,
-        msg: 'hello world',
-        additional: {
-          foo: {
-            bar: [{ a: 1, b: 2 }],
-          },
-        },
-      },
-      true,
-      {},
-      true,
-    )
+    const log2 = logBuilder.build({
+      log: { level: 30, msg: 'hello world', additional: { foo: { bar: [{ a: 1, b: 2 }] } } },
+      replaceTimestamp: true,
+      convertArrays: true,
+    })
 
     assert.deepEqual(JSON.parse(log2.values[0][1]), {
       level: 30,
       msg: 'hello world',
-      additional: {
-        foo: {
-          bar: { 0: { a: 1, b: 2 } },
-        },
-      },
+      additional: { foo: { bar: { 0: { a: 1, b: 2 } } } },
     })
   })
 })

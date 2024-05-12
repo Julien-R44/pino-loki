@@ -87,27 +87,27 @@ export class LogBuilder {
   /**
    * Build a loki log entry from a pino log
    */
-  build(
-    log: PinoLog,
-    replaceTimestamp?: boolean,
-    additionalLabels?: Record<string, string>,
-    convertArrays?: boolean,
-  ): LokiLog {
-    const status = this.statusFromLevel(log.level)
-    const time = this.#buildTimestamp(log, replaceTimestamp)
-    const propsLabels = this.#buildLabelsFromProps(log)
+  build(options: {
+    log: PinoLog
+    replaceTimestamp?: boolean
+    additionalLabels?: Record<string, string>
+    convertArrays?: boolean
+  }): LokiLog {
+    const status = this.statusFromLevel(options.log.level)
+    const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
+    const propsLabels = this.#buildLabelsFromProps(options.log)
 
-    const hostname = log.hostname
-    log.hostname = undefined
+    const hostname = options.log.hostname
+    options.log.hostname = undefined
 
     return {
       stream: {
         level: status,
         hostname,
-        ...additionalLabels,
+        ...options.additionalLabels,
         ...propsLabels,
       },
-      values: [[time, this.#stringifyLog(log, convertArrays)]],
+      values: [[time, this.#stringifyLog(options.log, options.convertArrays)]],
     }
   }
 }

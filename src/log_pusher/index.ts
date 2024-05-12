@@ -60,12 +60,12 @@ export class LogPusher {
     }
 
     const lokiLogs = logs.map((log) =>
-      this.#logBuilder.build(
+      this.#logBuilder.build({
         log,
-        this.#options.replaceTimestamp,
-        this.#options.labels,
-        this.#options.convertArrays,
-      ),
+        replaceTimestamp: this.#options.replaceTimestamp,
+        additionalLabels: this.#options.labels,
+        convertArrays: this.#options.convertArrays,
+      }),
     )
 
     debug(`[LogPusher] pushing ${lokiLogs.length} logs to Loki`)
