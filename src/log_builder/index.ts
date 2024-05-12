@@ -6,19 +6,6 @@ const NANOSECONDS_LENGTH = 19
 type BuilderOptions = Pick<LokiOptions, 'propsToLabels' | 'levelMap'>
 
 /**
- * Recursively converts an array to an object with index position as key
- */
-export function convertArray(data: unknown): unknown {
-  if (typeof data !== 'object' || !data) {
-    return data
-  }
-  if (Array.isArray(data)) {
-    return Object.fromEntries(data.map((value, index) => [index, convertArray(value)]))
-  }
-  return Object.fromEntries(Object.entries(data).map(([key, value]) => [key, convertArray(value)]))
-}
-
-/**
  * Converts a Pino log to a Loki log
  */
 export class LogBuilder {
@@ -62,6 +49,22 @@ export class LogBuilder {
     return (time * missingFactor).toString()
   }
 
+  /**
+   * Stringify the log object. If convertArrays is true then it will convert
+   * arrays to objects with indexes as keys.
+   */
+  #stringifyLog(log: PinoLog, convertArrays?: boolean): string {
+    return JSON.stringify(log, (_, value) => {
+      if (!convertArrays) return value
+
+      if (Array.isArray(value)) {
+        return Object.fromEntries(value.map((value, index) => [index, value]))
+      }
+
+      return value
+    })
+  }
+
   #buildLabelsFromProps(log: PinoLog) {
     const labels: Record<string, string> = {}
 
@@ -97,8 +100,6 @@ export class LogBuilder {
     const hostname = log.hostname
     log.hostname = undefined
 
-    const converted = convertArrays ? convertArray(log) : log
-
     return {
       stream: {
         level: status,
@@ -106,7 +107,7 @@ export class LogBuilder {
         ...additionalLabels,
         ...propsLabels,
       },
-      values: [[time, JSON.stringify(converted)]],
+      values: [[time, this.#stringifyLog(log, convertArrays)]],
     }
   }
 }
