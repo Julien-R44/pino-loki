@@ -83,5 +83,6 @@
     "typescript": "^5.4.5",
     "unbuild": "^2.0.0"
   },
-  "prettier": "@julr/tooling-configs/prettier"
+  "prettier": "@julr/tooling-configs/prettier",
+  "packageManager": "pnpm@9.4.0"
 }

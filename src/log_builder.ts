@@ -113,9 +113,10 @@ export class LogBuilder {
 
     const metadata = this.#propsBuilder
       ? this.#propsBuilder({
-        ...Object.fromEntries(Object.entries(options.log)
-            .filter(([key]) => key !== 'level' && key !== 'time'))
-      })
+          ...Object.fromEntries(
+            Object.entries(options.log).filter(([key]) => key !== 'level' && key !== 'time'),
+          ),
+        })
       : {
           ...options.additionalLabels,
           ...propsLabels,

@@ -48,12 +48,11 @@ test.group('Loki integration', () => {
         ...credentials,
         batching: false,
         messageBuilder: (log) => log.msg,
-        propsBuilder: (log) => (
-          {
-            application,
-            // all props except msg
-            ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg'))
-          }),
+        propsBuilder: (log) => ({
+          application,
+          // all props except msg
+          ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),
+        }),
       }),
     )
 

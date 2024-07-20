@@ -187,8 +187,8 @@ test.group('Log Builder', () => {
     const logBuilder = new LogBuilder({
       propsBuilder: (log) => ({
         application: 'MY-APP',
-        ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg'))
-      })
+        ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),
+      }),
     })
 
     const log: PinoLog = {
