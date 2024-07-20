@@ -123,15 +123,7 @@ export interface LokiOptions {
   convertArrays?: boolean
 
   /**
-   * Override default PinoLog to string message function. By default it will
-   * stringify log object as JSON.
+   * Which PinoLog field to use as a message. By default, JSON of full object is used as a message.
    */
-  messageBuilder?: (log: PinoLog) => string
-
-  /**
-   * Override default labels builder. By default, it will return null which means
-   * no additional labels will be added to the log. Function does not receive 'level' and 'time'
-   * keys from the log object.
-   */
-  labelsBuilder?: (log: object) => Record<string, string>
+  messageField?: string
 }

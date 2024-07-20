@@ -112,13 +112,9 @@ Defaults to `false`. If true, the timestamp in the pino log will be replaced wit
 
 Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
 
-#### `messageBuilder`
+#### `messageField`
 
-A function that takes a log object and returns a string. This can be used to customize the message sent to Loki. Defaults to JSON string of `log` object.
-
-#### `labelsBuilder`
-
-A function that takes a log object and returns an object. This can be used to customize the properties sent to Loki. Defaults to `labels` and copied `propsToLabels`.
+Which PinoLog field to use as a message. By default, JSON of full object is used as a message.
 
 ## CLI usage
 ```shell
@@ -215,13 +211,9 @@ function createLoggerConfig(configService: ConfigService) {
           batching: true,
           interval: 5,
           host: configService.get<string>("LOKI_HOST"),
-          messageBuilder: (log) => log.msg,
-          propsBuilder: (log) => (
-            {
-              application: "test-appication",
-              // all props except msg
-              ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== "msg"))
-            })
+          messageField: (log) => 'msg',
+          labels: { application: 'MY-APP' },
+          propsToLabels: ['pid', 'context'],
         } satisfies LokiOptions
       }
     }

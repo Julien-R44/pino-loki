@@ -39,7 +39,7 @@ test.group('Loki integration', () => {
     assert.deepInclude(JSON.parse(log.values[0][1]), { test: application })
   })
 
-  test('send a log with builders', async ({ assert }) => {
+  test('send a log with message field', async ({ assert }) => {
     const application = randomUUID()
 
     const logger = pino(
@@ -47,12 +47,9 @@ test.group('Loki integration', () => {
       pinoLoki({
         ...credentials,
         batching: false,
-        messageBuilder: (log) => log.msg,
-        labelsBuilder: (log) => ({
-          application,
-          // all props except msg
-          ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),
-        }),
+        messageField: 'msg',
+        propsToLabels: ['test'],
+        labels: { application },
       }),
     )
 

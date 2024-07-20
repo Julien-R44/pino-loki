@@ -3,10 +3,7 @@ import type { LokiLog, PinoLog, LokiOptions } from './types'
 
 const NANOSECONDS_LENGTH = 19
 
-type BuilderOptions = Pick<
-  LokiOptions,
-  'propsToLabels' | 'levelMap' | 'messageBuilder' | 'labelsBuilder'
->
+type BuilderOptions = Pick<LokiOptions, 'propsToLabels' | 'levelMap' | 'messageField'>
 
 /**
  * Converts a Pino log to a Loki log
@@ -14,8 +11,7 @@ type BuilderOptions = Pick<
 export class LogBuilder {
   #propsToLabels: string[]
   #levelMap: { [key: number]: LokiLogLevel }
-  #messageBuilder?: (log: PinoLog) => string
-  #labelsBuilder?: (log: object) => Record<string, string>
+  #messageField?: string
 
   constructor(options?: BuilderOptions) {
     this.#propsToLabels = options?.propsToLabels || []
@@ -30,8 +26,7 @@ export class LogBuilder {
       },
       options?.levelMap,
     )
-    this.#messageBuilder = options?.messageBuilder
-    this.#labelsBuilder = options?.labelsBuilder
+    this.#messageField = options?.messageField
   }
 
   /**
@@ -107,20 +102,14 @@ export class LogBuilder {
     const hostname = options.log.hostname
     options.log.hostname = undefined
 
-    const message = this.#messageBuilder
-      ? this.#messageBuilder(options.log)
+    const message = this.#messageField
+      ? options.log[this.#messageField]
       : this.#stringifyLog(options.log, options.convertArrays)
 
-    const labels = this.#labelsBuilder
-      ? this.#labelsBuilder({
-          ...Object.fromEntries(
-            Object.entries(options.log).filter(([key]) => key !== 'level' && key !== 'time'),
-          ),
-        })
-      : {
-          ...options.additionalLabels,
-          ...propsLabels,
-        }
+    const labels = {
+      ...options.additionalLabels,
+      ...propsLabels,
+    }
 
     return {
       stream: {

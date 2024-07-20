@@ -164,8 +164,10 @@ test.group('Log Builder', () => {
     })
   })
 
-  test('messageBuilder works', ({ assert }) => {
-    const logBuilder = new LogBuilder({ messageBuilder: (log) => log.msg })
+  test('messageField works', ({ assert }) => {
+    const logBuilder = new LogBuilder({
+      messageField: 'msg',
+    })
 
     const log: PinoLog = {
       hostname: 'localhost',
@@ -180,33 +182,6 @@ test.group('Log Builder', () => {
       additionalLabels: { application: 'MY-APP' },
     })
     assert.equal(lokiLog.values[0][1], 'hello world')
-    assert.equal(lokiLog.stream.level, 'info')
-  })
-
-  test('labelsBuilder works', ({ assert }) => {
-    const logBuilder = new LogBuilder({
-      labelsBuilder: (log) => ({
-        application: 'MY-APP',
-        ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),
-      }),
-    })
-
-    const log: PinoLog = {
-      hostname: 'localhost',
-      level: 30,
-      msg: 'hello world',
-      time: new Date(),
-      v: 1,
-      appId: 123,
-      buildId: 'aaaa',
-    }
-    const lokiLog = logBuilder.build({
-      log,
-      replaceTimestamp: true,
-    })
-    assert.equal(lokiLog.stream.application, 'MY-APP')
-    assert.equal(lokiLog.stream.appId, 123)
-    assert.equal(lokiLog.stream.buildId, 'aaaa')
     assert.equal(lokiLog.stream.level, 'info')
   })
 })
