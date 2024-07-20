@@ -76,7 +76,7 @@ export interface LokiOptions {
   replaceTimestamp?: boolean
 
   /**
-   * Additional labels to be added to all Loki logs
+   * Additional labels to be added to all Loki logs. Ignored if propsBuilder is set.
    */
   labels?: {
     [key: string]: string
@@ -111,7 +111,7 @@ export interface LokiOptions {
   headers?: Record<string, string>
 
   /**
-   * Select log message's props to set as Loki labels
+   * Select log message's props to set as Loki labels. Ignored if propsBuilder is set.
    */
   propsToLabels?: string[]
 
@@ -121,4 +121,17 @@ export interface LokiOptions {
    * @default false
    */
   convertArrays?: boolean
+
+  /**
+   * Override default PinoLog to string message function. By default it will
+   * stringify log object as JSON.
+   */
+  messageBuilder?: (log: PinoLog) => string
+
+  /**
+   * Override default props builder. By default, it will return null which means
+   * no additional labels will be added to the log. Function does not receive 'level' and 'time'
+   * keys from the log object.
+   */
+  propsBuilder?: (log: object) => Record<string, string>
 }

@@ -188,6 +188,51 @@ const loggerConfig = defineConfig({
 
 And you should be good to go! You can check our [full example](./examples/adonisjs/) for more details.
 
+## Usage in NestJS
+
+You can use pino-loki in NestJS by using [nestjs-pino](https://www.npmjs.com/package/nestjs-pino). 
+Here is an example of how to configure pino-loki in NestJS with specific logging message format:
+
+```ts
+import { LoggerModule } from 'nestjs-pino';
+import type { LokiOptions } from 'pino-loki'
+
+function createLoggerConfig(configService: ConfigService) {
+  return {
+    pinoHttp: {
+      level: configService.get<string>("LOG_LEVEL"),
+      transport: {
+        target: "pino-loki",
+        options: {
+          batching: true,
+          interval: 5,
+          host: configService.get<string>("LOKI_HOST"),
+          messageBuilder: (log) => log.msg,
+          propsBuilder: (log) => (
+            {
+              application: "test-appication",
+              // all props except msg
+              ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== "msg"))
+            })
+        } satisfies LokiOptions
+      }
+    }
+  };
+}
+
+@Module({
+  imports: [
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: createLoggerConfig,
+    }),
+  ],
+})
+export class AppModule {
+}
+```
+
 # Limitations and considerations
 ## Out-of-order errors
 Out-of-order Loki errors can occur due to the asynchronous nature of Pino. The fix to this is to allow for out-of-order logs in the Loki configuration. The reason why Loki doesn't have this enabled by default is because Promtail accounts for ordering constraints, however the same issue can also happen with promtail in high-load or when working with distributed networks.

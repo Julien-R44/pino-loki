@@ -40,7 +40,7 @@ function pinoLoki(userOptions: LokiOptions) {
             return
           }
 
-          logPusher.push(pinoLogBuffer)
+          await logPusher.push(pinoLogBuffer)
           pinoLogBuffer = []
         }, options.interval! * 1000)
       }
@@ -51,7 +51,7 @@ function pinoLoki(userOptions: LokiOptions) {
           continue
         }
 
-        logPusher.push(obj)
+        await logPusher.push(obj)
       }
     },
     {

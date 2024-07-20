@@ -163,4 +163,50 @@ test.group('Log Builder', () => {
       additional: { foo: { bar: { 0: { a: 1, b: 2 } } } },
     })
   })
+
+  test('messageBuilder works', ({ assert }) => {
+    const logBuilder = new LogBuilder({ messageBuilder: (log) => log.msg })
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: new Date(),
+      v: 1,
+    }
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: true,
+      additionalLabels: { application: 'MY-APP' },
+    })
+    assert.equal(lokiLog.values[0][1], 'hello world')
+    assert.equal(lokiLog.stream.level, 'info')
+  })
+
+  test('propsBuilder works', ({ assert }) => {
+    const logBuilder = new LogBuilder({
+      propsBuilder: (log) => ({
+        application: 'MY-APP',
+        ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg'))
+      })
+    })
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: new Date(),
+      v: 1,
+      appId: 123,
+      buildId: 'aaaa',
+    }
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: true,
+    })
+    assert.equal(lokiLog.stream.application, 'MY-APP')
+    assert.equal(lokiLog.stream.appId, 123)
+    assert.equal(lokiLog.stream.buildId, 'aaaa')
+    assert.equal(lokiLog.stream.level, 'info')
+  })
 })

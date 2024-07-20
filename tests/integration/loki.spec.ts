@@ -39,6 +39,40 @@ test.group('Loki integration', () => {
     assert.deepInclude(JSON.parse(log.values[0][1]), { test: application })
   })
 
+  test('send a log with builders', async ({ assert }) => {
+    const application = randomUUID()
+
+    const logger = pino(
+      { level: 'info' },
+      pinoLoki({
+        ...credentials,
+        batching: false,
+        messageBuilder: (log) => log.msg,
+        propsBuilder: (log) => (
+          {
+            application,
+            // all props except msg
+            ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg'))
+          }),
+      }),
+    )
+
+    const logItem = { msg: 'Text message', test: application }
+    logger.info(logItem)
+
+    await sleep(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
+
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.equal(log.stream.test, logItem.test)
+    assert.deepInclude(log.values[0][1], logItem.msg)
+  })
+
   test('levels are mapped correctly', async ({ assert }) => {
     const application = randomUUID()
 
