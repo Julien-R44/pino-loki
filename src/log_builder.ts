@@ -5,7 +5,7 @@ const NANOSECONDS_LENGTH = 19
 
 type BuilderOptions = Pick<
   LokiOptions,
-  'propsToLabels' | 'levelMap' | 'messageBuilder' | 'propsBuilder'
+  'propsToLabels' | 'levelMap' | 'messageBuilder' | 'labelsBuilder'
 >
 
 /**
@@ -15,7 +15,7 @@ export class LogBuilder {
   #propsToLabels: string[]
   #levelMap: { [key: number]: LokiLogLevel }
   #messageBuilder?: (log: PinoLog) => string
-  #propsBuilder?: (log: object) => Record<string, string>
+  #labelsBuilder?: (log: object) => Record<string, string>
 
   constructor(options?: BuilderOptions) {
     this.#propsToLabels = options?.propsToLabels || []
@@ -31,7 +31,7 @@ export class LogBuilder {
       options?.levelMap,
     )
     this.#messageBuilder = options?.messageBuilder
-    this.#propsBuilder = options?.propsBuilder
+    this.#labelsBuilder = options?.labelsBuilder
   }
 
   /**
@@ -111,8 +111,8 @@ export class LogBuilder {
       ? this.#messageBuilder(options.log)
       : this.#stringifyLog(options.log, options.convertArrays)
 
-    const metadata = this.#propsBuilder
-      ? this.#propsBuilder({
+    const labels = this.#labelsBuilder
+      ? this.#labelsBuilder({
           ...Object.fromEntries(
             Object.entries(options.log).filter(([key]) => key !== 'level' && key !== 'time'),
           ),
@@ -126,7 +126,7 @@ export class LogBuilder {
       stream: {
         level: status,
         hostname,
-        ...metadata,
+        ...labels,
       },
       values: [[time, message]],
     }

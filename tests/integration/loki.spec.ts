@@ -48,7 +48,7 @@ test.group('Loki integration', () => {
         ...credentials,
         batching: false,
         messageBuilder: (log) => log.msg,
-        propsBuilder: (log) => ({
+        labelsBuilder: (log) => ({
           application,
           // all props except msg
           ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),

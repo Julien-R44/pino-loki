@@ -30,7 +30,7 @@ export class LogPusher {
       levelMap: options.levelMap,
       propsToLabels: options.propsToLabels,
       messageBuilder: options.messageBuilder,
-      propsBuilder: options.propsBuilder,
+      labelsBuilder: options.labelsBuilder,
     })
   }
 

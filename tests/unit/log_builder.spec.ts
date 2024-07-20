@@ -183,9 +183,9 @@ test.group('Log Builder', () => {
     assert.equal(lokiLog.stream.level, 'info')
   })
 
-  test('propsBuilder works', ({ assert }) => {
+  test('labelsBuilder works', ({ assert }) => {
     const logBuilder = new LogBuilder({
-      propsBuilder: (log) => ({
+      labelsBuilder: (log) => ({
         application: 'MY-APP',
         ...Object.fromEntries(Object.entries(log).filter(([key]) => key !== 'msg')),
       }),
