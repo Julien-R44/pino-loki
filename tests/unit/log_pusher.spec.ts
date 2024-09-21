@@ -59,7 +59,7 @@ test.group('LogPusher', (group) => {
 
     await pusher.push({ level: 30 })
 
-    assert.equal(basicAuthHeader, Buffer.from('user:pass').toString('base64'))
+    assert.equal(basicAuthHeader, 'Basic ' + Buffer.from('user:pass').toString('base64'))
   })
 
   test('should not output error when silenceErrors is true', async ({ assert }) => {

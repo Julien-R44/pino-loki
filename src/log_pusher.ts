@@ -70,9 +70,11 @@ export class LogPusher {
         headers: {
           ...this.#options.headers,
           ...(this.#options.basicAuth && {
-            Authorization: Buffer.from(
-              `${this.#options.basicAuth.username}:${this.#options.basicAuth.password}`,
-            ).toString('base64'),
+            Authorization:
+              'Basic ' +
+              Buffer.from(
+                `${this.#options.basicAuth.username}:${this.#options.basicAuth.password}`,
+              ).toString('base64'),
           }),
           'Content-Type': 'application/json',
         },
