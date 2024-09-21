@@ -25,6 +25,7 @@ export class LogPusher {
     this.#logBuilder = new LogBuilder({
       levelMap: options.levelMap,
       propsToLabels: options.propsToLabels,
+      messageField: options.messageField,
     })
   }
 

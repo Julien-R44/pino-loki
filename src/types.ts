@@ -76,7 +76,7 @@ export interface LokiOptions {
   replaceTimestamp?: boolean
 
   /**
-   * Additional labels to be added to all Loki logs
+   * Additional labels to be added to all Loki logs. Ignored if labelsBuilder is set.
    */
   labels?: {
     [key: string]: string
@@ -111,7 +111,7 @@ export interface LokiOptions {
   headers?: Record<string, string>
 
   /**
-   * Select log message's props to set as Loki labels
+   * Select log message's props to set as Loki labels. Ignored if labelsBuilder is set.
    */
   propsToLabels?: string[]
 
@@ -121,4 +121,9 @@ export interface LokiOptions {
    * @default false
    */
   convertArrays?: boolean
+
+  /**
+   * Which PinoLog field to use as a message. By default, JSON of full object is used as a message.
+   */
+  messageField?: string
 }

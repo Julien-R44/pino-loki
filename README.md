@@ -112,6 +112,10 @@ Defaults to `false`. If true, the timestamp in the pino log will be replaced wit
 
 Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
 
+#### `messageField`
+
+Which PinoLog field to use as a message. By default, JSON of full object is used as a message.
+
 ## CLI usage
 ```shell
 npm install -g pino-loki
@@ -187,6 +191,47 @@ const loggerConfig = defineConfig({
 ```
 
 And you should be good to go! You can check our [full example](./examples/adonisjs/) for more details.
+
+## Usage in NestJS
+
+You can use pino-loki in NestJS by using [nestjs-pino](https://www.npmjs.com/package/nestjs-pino). 
+Here is an example of how to configure pino-loki in NestJS with specific logging message format:
+
+```ts
+import { LoggerModule } from 'nestjs-pino';
+import type { LokiOptions } from 'pino-loki'
+
+function createLoggerConfig(configService: ConfigService) {
+  return {
+    pinoHttp: {
+      level: configService.get<string>("LOG_LEVEL"),
+      transport: {
+        target: "pino-loki",
+        options: {
+          batching: true,
+          interval: 5,
+          host: configService.get<string>("LOKI_HOST"),
+          messageField: (log) => 'msg',
+          labels: { application: 'MY-APP' },
+          propsToLabels: ['pid', 'context'],
+        } satisfies LokiOptions
+      }
+    }
+  };
+}
+
+@Module({
+  imports: [
+    LoggerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: createLoggerConfig,
+    }),
+  ],
+})
+export class AppModule {
+}
+```
 
 # Limitations and considerations
 ## Out-of-order errors

@@ -2,6 +2,7 @@
   "name": "pino-loki",
   "type": "commonjs",
   "version": "2.3.0",
+  "packageManager": "pnpm@9.4.0",
   "description": "A transport for pino that sends messages to Loki",
   "author": "Julien Ripouteau <julien@ripouteau.com>",
   "license": "MIT",

@@ -163,4 +163,25 @@ test.group('Log Builder', () => {
       additional: { foo: { bar: { 0: { a: 1, b: 2 } } } },
     })
   })
+
+  test('messageField works', ({ assert }) => {
+    const logBuilder = new LogBuilder({
+      messageField: 'msg',
+    })
+
+    const log: PinoLog = {
+      hostname: 'localhost',
+      level: 30,
+      msg: 'hello world',
+      time: new Date(),
+      v: 1,
+    }
+    const lokiLog = logBuilder.build({
+      log,
+      replaceTimestamp: true,
+      additionalLabels: { application: 'MY-APP' },
+    })
+    assert.equal(lokiLog.values[0][1], 'hello world')
+    assert.equal(lokiLog.stream.level, 'info')
+  })
 })
