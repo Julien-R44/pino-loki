@@ -14,7 +14,7 @@ jobs:
       - name: Install pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack use pnpm@*
 
       - name: Set node
         uses: actions/setup-node@v4
@@ -36,7 +36,7 @@ jobs:
       - name: Install pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack use pnpm@*
 
       - name: Set node
         uses: actions/setup-node@v4
@@ -66,7 +66,7 @@ jobs:
       - name: Install pnpm
         run: |
           corepack enable
-          corepack prepare pnpm@latest --activate
+          corepack use pnpm@*
 
       - name: Set node version to ${{ matrix.node }}
         uses: actions/setup-node@v4
