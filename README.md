@@ -195,6 +195,9 @@ Out-of-order Loki errors can occur due to the asynchronous nature of Pino. The f
 ## Dropped logs
 If any network issues occur, the logs can be dropped. The recommendation is therefore to implement a failover solution, this will vary greatly from system to system.
 
+## Node v18+ Required
+As the pino-loki library uses the native Node fetch, any consumer must be using a version of Node greater than v18.0.0.
+
 ## Developing
 
 ### Requirements
