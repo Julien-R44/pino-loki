@@ -1,5 +1,3 @@
-import got from 'got'
-
 interface QueryRangeResponse<StreamType extends Record<string, string>> {
   status: string
   data: {
@@ -13,15 +11,11 @@ interface QueryRangeResponse<StreamType extends Record<string, string>> {
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class LokiClient {
-  static client = got.extend({
-    prefixUrl: process.env.LOKI_HOST!,
-    username: process.env.LOKI_USERNAME!,
-    password: process.env.LOKI_PASSWORD!,
-  })
+  static async getLogs(query: string) {
+    const url = new URL('loki/api/v1/query', process.env.LOKI_HOST!)
+    url.searchParams.append('query', query)
+    url.searchParams.append('limit', '10')
 
-  static getLogs(query: string) {
-    return this.client
-      .get('loki/api/v1/query', { searchParams: { query, limit: 10 } })
-      .json<QueryRangeResponse<any>>()
+    return fetch(url).then((response) => response.json() as Promise<QueryRangeResponse<any>>)
   }
 }

@@ -1,9 +1,16 @@
-import type { Got } from 'got'
-import got, { RequestError } from 'got'
-
 import debug from './debug'
 import { LogBuilder } from './log_builder'
 import type { PinoLog, LokiOptions } from './types'
+
+class RequestError extends Error {
+  responseBody: string
+
+  constructor(message: string, responseBody: string) {
+    super(message)
+    this.name = 'RequestError'
+    this.responseBody = responseBody
+  }
+}
 
 /**
  * Responsible for pushing logs to Loki
@@ -11,20 +18,9 @@ import type { PinoLog, LokiOptions } from './types'
 export class LogPusher {
   #options: LokiOptions
   #logBuilder: LogBuilder
-  #client: Got
 
   constructor(options: LokiOptions) {
     this.#options = options
-
-    this.#client = got.extend({
-      ...(this.#options.host && { prefixUrl: this.#options.host }),
-      timeout: { request: this.#options.timeout ?? 30_000 },
-      headers: options.headers ?? {},
-      ...(this.#options.basicAuth && {
-        username: this.#options.basicAuth?.username,
-        password: this.#options.basicAuth?.password,
-      }),
-    })
 
     this.#logBuilder = new LogBuilder({
       levelMap: options.levelMap,
@@ -41,10 +37,7 @@ export class LogPusher {
     }
 
     if (err instanceof RequestError) {
-      console.error(
-        'Got error when trying to send log to Loki:',
-        err.message + '\n' + err.response?.body,
-      )
+      console.error(err.message + '\n' + err.responseBody)
       return
     }
 
@@ -70,9 +63,28 @@ export class LogPusher {
 
     debug(`[LogPusher] pushing ${lokiLogs.length} logs to Loki`)
 
-    await this.#client
-      .post(`loki/api/v1/push`, { json: { streams: lokiLogs } })
-      .catch(this.#handleFailure.bind(this))
+    try {
+      const response = await fetch(new URL('loki/api/v1/push', this.#options.host), {
+        method: 'POST',
+        signal: AbortSignal.timeout(this.#options.timeout ?? 30_000),
+        headers: {
+          ...this.#options.headers,
+          ...(this.#options.basicAuth && {
+            Authorization: Buffer.from(
+              `${this.#options.basicAuth.username}:${this.#options.basicAuth.password}`,
+            ).toString('base64'),
+          }),
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ streams: lokiLogs }),
+      })
+
+      if (!response.ok) {
+        throw new RequestError('Got error when trying to send log to loki', await response.text())
+      }
+    } catch (err) {
+      this.#handleFailure(err)
+    }
 
     debug(`[LogPusher] pushed ${lokiLogs.length} logs to Loki`, { logs: lokiLogs })
   }
