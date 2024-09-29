@@ -17,7 +17,7 @@ Pino-loki is for Pino v7.0.0 and above, so the module can be configured to opera
 import pino from 'pino'
 import type { LokiOptions } from 'pino-loki'
 
-const transport = pino.transport<LokiTransportOptions>({
+const transport = pino.transport<LokiOptions>({
   target: "pino-loki",
   options: {
     batching: true,
