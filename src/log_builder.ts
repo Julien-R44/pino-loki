@@ -99,7 +99,9 @@ export class LogBuilder {
 
     const hostname = options.log.hostname
     options.log.hostname = undefined
-
+    const meta = options.log.meta || {}
+    options.log.meta = undefined
+    
     return {
       stream: {
         level: status,
@@ -107,7 +109,7 @@ export class LogBuilder {
         ...options.additionalLabels,
         ...propsLabels,
       },
-      values: [[time, this.#stringifyLog(options.log, options.convertArrays)]],
+      values: [[time, this.#stringifyLog(options.log, options.convertArrays), meta]],
     }
   }
 }
