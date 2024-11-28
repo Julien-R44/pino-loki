@@ -108,6 +108,14 @@ The interval at which batched logs are sent in seconds. Defaults to `5`.
 
 Defaults to `false`. If true, the timestamp in the pino log will be replaced with `Date.now()`. Be careful when using this option with `batching` enabled, as the logs will be sent in batches, and the timestamp will be the time of the batch, not the time of the log.
 
+#### `structuredMetaKey`
+
+The key in the pino log object that contains [structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/). Defaults to `undefined` which means that structured metadata will not be sent to Loki. If set to `meta` for example, `{ recordId: 123, traceId: 456 }` will be sent if using the following log : 
+
+```ts
+logger.info({ meta: { recordId: 123, traceId: 456 } }, 'Hello')
+```
+
 #### `convertArrays`
 
 Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
@@ -133,6 +141,7 @@ Options:
   -l, --labels <label>           Additional labels to be added to all Loki logs
   -a, --convertArrays            If true, arrays will be converted to objects
   -pl, --propsLabels <labels>    Fields in log line to convert to Loki labels (comma separated values)
+  --structuredMetaKey <key>      Key in the pino log object that contains structured metadata
   --no-stdout                    Disable output to stdout
   -h, --help                     display help for command
 ```

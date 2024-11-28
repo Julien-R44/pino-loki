@@ -16,4 +16,11 @@ test.group('Cli', () => {
 
     assert.deepEqual(ret.propsToLabels, ['foo', 'bar'])
   })
+
+  test('structured metadata key', ({ assert }) => {
+    process.argv = ['node', 'src/cli.ts', '--structuredMetaKey', `foo`]
+    const ret = createPinoLokiConfigFromArgs()
+
+    assert.equal(ret.structuredMetaKey, 'foo')
+  })
 })

@@ -18,6 +18,7 @@ function resolveOptions(options: LokiOptions) {
     replaceTimestamp: options.replaceTimestamp ?? false,
     propsToLabels: options.propsToLabels ?? [],
     convertArrays: options.convertArrays ?? false,
+    structuredMetaKey: options.structuredMetaKey,
   }
 }
 

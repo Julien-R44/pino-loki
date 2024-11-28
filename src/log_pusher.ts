@@ -58,6 +58,7 @@ export class LogPusher {
         replaceTimestamp: this.#options.replaceTimestamp,
         additionalLabels: this.#options.labels,
         convertArrays: this.#options.convertArrays,
+        structuredMetaKey: this.#options.structuredMetaKey,
       }),
     )
 

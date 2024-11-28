@@ -17,6 +17,7 @@ program
   .option('-r, --replaceTimestamp', 'Replace pino logs timestamps with Date.now()')
   .option('-l, --labels <label>', 'Additional labels to be added to all Loki logs')
   .option('-a, --convertArrays', 'If true, arrays will be converted to objects')
+  .option('--structuredMetaKey <key>', 'Key to use for structured metadata')
   .option(
     '-pl, --propsLabels <labels>',
     'Fields in log line to convert to Loki labels (comma separated values)',
@@ -38,6 +39,7 @@ export const createPinoLokiConfigFromArgs = () => {
     replaceTimestamp: opts.replaceTimestamp,
     labels: opts.labels ? JSON.parse(opts.labels) : undefined,
     propsToLabels: opts.propsLabels ? opts.propsLabels.split(',') : [],
+    structuredMetaKey: opts.structuredMetaKey,
     convertArrays: opts.convertArrays,
   }
 

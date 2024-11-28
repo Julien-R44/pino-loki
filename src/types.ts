@@ -9,6 +9,12 @@ export enum LokiLogLevel {
   Critical = 'critical',
 }
 
+type Timestamp = string
+
+type LogLine = string
+
+type StructuredMetadata = Record<string, any>
+
 /**
  * Shape for a Loki log entry
  */
@@ -17,7 +23,7 @@ export interface LokiLog {
     level: LokiLogLevel
     [key: string]: string
   }
-  values: [string, string][]
+  values: ([Timestamp, LogLine] | [Timestamp, LogLine, StructuredMetadata])[]
 }
 
 /**
@@ -25,6 +31,7 @@ export interface LokiLog {
  */
 export interface PinoLog {
   level: number
+  msg?: string
   [key: string]: any
 }
 
@@ -121,4 +128,16 @@ export interface LokiOptions {
    * @default false
    */
   convertArrays?: boolean
+
+  /**
+   * Key to be used for the structured metadata.
+   * If not set, no structured metadata will be sent
+   *
+   * See https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/
+   *
+   * @default undefined
+   *
+   */
+  // TODO: This should be `meta` by default when major version is bumped
+  structuredMetaKey?: string
 }

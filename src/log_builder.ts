@@ -92,6 +92,7 @@ export class LogBuilder {
     replaceTimestamp?: boolean
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
+    structuredMetaKey?: string
   }): LokiLog {
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
@@ -100,6 +101,10 @@ export class LogBuilder {
     const hostname = options.log.hostname
     options.log.hostname = undefined
 
+    const structuredMetadata: Record<string, any> = options.structuredMetaKey
+      ? options.log[options.structuredMetaKey]
+      : undefined
+
     return {
       stream: {
         level: status,
@@ -107,7 +112,14 @@ export class LogBuilder {
         ...options.additionalLabels,
         ...propsLabels,
       },
-      values: [[time, this.#stringifyLog(options.log, options.convertArrays)]],
+      values: [
+        // Make sure to exclude structured metadata from the log object
+        // if not present because olders versions of Loki will not accept
+        // it and will return an error.
+        structuredMetadata
+          ? [time, this.#stringifyLog(options.log, options.convertArrays), structuredMetadata]
+          : [time, this.#stringifyLog(options.log, options.convertArrays)],
+      ],
     }
   }
 }

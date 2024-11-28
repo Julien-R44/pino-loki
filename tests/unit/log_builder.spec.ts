@@ -163,4 +163,38 @@ test.group('Log Builder', () => {
       additional: { foo: { bar: { 0: { a: 1, b: 2 } } } },
     })
   })
+
+  test('include structured metadata when set', ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    const log = logBuilder.build({
+      log: { level: 30, msg: 'hello world', metaKey: { foo: 'bar' } },
+      replaceTimestamp: true,
+      structuredMetaKey: 'metaKey',
+    })
+
+    assert.deepEqual(JSON.parse(log.values[0][1]), {
+      level: 30,
+      msg: 'hello world',
+      metaKey: { foo: 'bar' },
+    })
+
+    assert.deepEqual(log.values[0][2], { foo: 'bar' })
+  })
+
+  test('does not include structured metadata when not set', ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    const log = logBuilder.build({
+      log: { level: 30, msg: 'hello world' },
+      structuredMetaKey: 'metaKey',
+      replaceTimestamp: true,
+    })
+
+    assert.deepEqual(JSON.parse(log.values[0][1]), {
+      level: 30,
+      msg: 'hello world',
+    })
+    assert.equal(log.values[0].length, 2)
+  })
 })
