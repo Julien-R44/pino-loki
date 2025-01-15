@@ -9,6 +9,9 @@ test.group('LogPusher', (group) => {
     http.post('http://localhost:3100/loki/api/v1/push', () => {
       return new Response(null, { status: 204 })
     }),
+    http.post('http://localhost:3100/loki/api/v1/push/test', () => {
+      return new Response(null, { status: 204 })
+    }),
   )
 
   group.setup(() => {
@@ -86,5 +89,21 @@ test.group('LogPusher', (group) => {
     assert.isTrue(true)
 
     console.error = consoleError
+  })
+
+  test("should be send logs to Loki's push API if specified", async ({ assert }) => {
+    const pusher = new LogPusher({
+      host: 'http://localhost:3100',
+      pushApiPath: 'loki/api/v1/push/test',
+    })
+
+    let url = ''
+    server.events.on('request:start', ({ request }) => {
+      url = request.url
+    })
+
+    pusher.push({ level: 30 })
+
+    assert.equal(url, 'http://localhost:3100/loki/api/v1/push/test')
   })
 })
