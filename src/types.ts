@@ -49,7 +49,7 @@ export interface LokiOptions {
    *
    * @default loki/api/v1/push
    */
-  pushApiPath?: string
+  endpoint?: string
 
   /**
    * Timeout for request to Loki

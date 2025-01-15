@@ -10,7 +10,7 @@ program
   .option('-u, --user <user>', 'Loki username')
   .option('-p, --password <password>', 'Loki password')
   .option('--hostname <hostname>', 'URL for Loki')
-  .option('--pushApiPath <pushApiPath>', 'Path to the Loki push API')
+  .option('--endpoint <endpoint>', 'Path to the Loki push API')
   .option('-b, --batch', 'Should logs be sent in batch mode')
   .option('-i, --interval <interval>', 'The interval at which batched logs are sent in seconds')
   .option('-t, --timeout <timeout>', 'Timeout for request to Loki')
@@ -33,7 +33,7 @@ export const createPinoLokiConfigFromArgs = () => {
 
   const config: LokiOptions = {
     host: opts.hostname,
-    pushApiPath: opts.pushApiPath,
+    endpoint: opts.endpoint,
     timeout: opts.timeout,
     silenceErrors: opts.silenceErrors,
     batching: opts.batch,

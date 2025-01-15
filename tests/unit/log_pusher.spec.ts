@@ -94,7 +94,7 @@ test.group('LogPusher', (group) => {
   test("should be send logs to Loki's push API if specified", async ({ assert }) => {
     const pusher = new LogPusher({
       host: 'http://localhost:3100',
-      pushApiPath: 'loki/api/v1/push/test',
+      endpoint: 'loki/api/v1/push/test',
     })
 
     let url = ''

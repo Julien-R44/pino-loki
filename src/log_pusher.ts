@@ -66,7 +66,7 @@ export class LogPusher {
 
     try {
       const response = await fetch(
-        new URL(this.#options.pushApiPath ?? 'loki/api/v1/push', this.#options.host),
+        new URL(this.#options.endpoint ?? 'loki/api/v1/push', this.#options.host),
         {
           method: 'POST',
           signal: AbortSignal.timeout(this.#options.timeout ?? 30_000),

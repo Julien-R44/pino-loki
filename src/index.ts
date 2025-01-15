@@ -11,7 +11,7 @@ import type { PinoLog, LokiOptions } from './types'
 function resolveOptions(options: LokiOptions) {
   return {
     ...options,
-    pushApiPath: options.pushApiPath ?? 'loki/api/v1/push',
+    endpoint: options.endpoint ?? 'loki/api/v1/push',
     timeout: options.timeout ?? 30_000,
     silenceErrors: options.silenceErrors ?? false,
     batching: options.batching ?? true,
