@@ -68,6 +68,10 @@ A map of pino log levels to Loki log levels. This can be used to map pino log le
 
 The URL for Loki. This is required.
 
+#### `pushApiPath`
+
+The path to the Loki push API. Defaults to `/loki/api/v1/push`.
+
 #### `basicAuth`
 
 Basic auth credentials for Loki. An object with the following shape:
@@ -133,6 +137,7 @@ Options:
   -u, --user <user>              Loki username
   -p, --password <password>      Loki password
   --hostname <hostname>          URL for Loki
+  --pushApiPath <pushApiPath>    Path to the Loki push API
   -b, --batch                    Should logs be sent in batch mode
   -i, --interval <interval>      The interval at which batched logs are sent in seconds
   -t, --timeout <timeout>        Timeout for request to Loki
