@@ -65,22 +65,25 @@ export class LogPusher {
     debug(`[LogPusher] pushing ${lokiLogs.length} logs to Loki`)
 
     try {
-      const response = await fetch(new URL('loki/api/v1/push', this.#options.host), {
-        method: 'POST',
-        signal: AbortSignal.timeout(this.#options.timeout ?? 30_000),
-        headers: {
-          ...this.#options.headers,
-          ...(this.#options.basicAuth && {
-            Authorization:
-              'Basic ' +
-              Buffer.from(
-                `${this.#options.basicAuth.username}:${this.#options.basicAuth.password}`,
-              ).toString('base64'),
-          }),
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        new URL(this.#options.endpoint ?? 'loki/api/v1/push', this.#options.host),
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(this.#options.timeout ?? 30_000),
+          headers: {
+            ...this.#options.headers,
+            ...(this.#options.basicAuth && {
+              Authorization:
+                'Basic ' +
+                Buffer.from(
+                  `${this.#options.basicAuth.username}:${this.#options.basicAuth.password}`,
+                ).toString('base64'),
+            }),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ streams: lokiLogs }),
         },
-        body: JSON.stringify({ streams: lokiLogs }),
-      })
+      )
 
       if (!response.ok) {
         throw new RequestError('Got error when trying to send log to loki', await response.text())

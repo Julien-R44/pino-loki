@@ -45,6 +45,13 @@ export interface LokiOptions {
   host: string
 
   /**
+   * Url for Loki push API
+   *
+   * @default loki/api/v1/push
+   */
+  endpoint?: string
+
+  /**
    * Timeout for request to Loki
    *
    * @default 30_000
