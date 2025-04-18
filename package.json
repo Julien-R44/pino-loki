@@ -56,8 +56,7 @@
     "quick:test": "node -r ts-node/register bin/test.ts",
     "test": "c8 node -r ts-node/register bin/test.ts",
     "typecheck": "tsc --noEmit",
-    "checks": "pnpm typecheck && pnpm lint && pnpm test",
-    "prepare": "npm run build"
+    "checks": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
     "commander": "^12.1.0",
