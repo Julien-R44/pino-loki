@@ -73,5 +73,5 @@ function pinoLoki(userOptions: LokiOptions) {
 }
 
 export default pinoLoki
-export type { LokiOptions }
+export type { LokiOptions, PinoLog }
 export { LokiLogLevel }
