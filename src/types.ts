@@ -32,6 +32,9 @@ export interface LokiLog {
 export interface PinoLog {
   level: number
   msg?: string
+  levelParsed?: string
+  time?: number
+  timeParsed?: string
   [key: string]: any
 }
 
@@ -147,4 +150,17 @@ export interface LokiOptions {
    */
   // TODO: This should be `meta` by default when major version is bumped
   structuredMetaKey?: string
+
+  /**
+   * Function to format the label before sending it to Loki.
+   * This is useful if you want to change the string to be sent to loki to a different format.
+   * Will replace the built-in stringified json function
+   *
+   * @default undefined
+   *
+   * @param label
+   *
+   * @returns string
+   */
+  formattingFunction?: (label: PinoLog) => string
 }

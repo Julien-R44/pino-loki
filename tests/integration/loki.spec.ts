@@ -130,4 +130,35 @@ test.group('Loki integration', () => {
     assert.equal(firstStream.stream.application, application)
     assert.equal(firstStream.values.length, 3)
   })
+
+  test('send a custom format log', async ({ assert }) => {
+    const application = randomUUID()
+
+    const logger = pino(
+      { level: 'info' },
+      pinoLoki({
+        ...credentials,
+        batching: false,
+        labels: { application },
+        formattingFunction: (log) => {
+          return `${log.timeParsed} | ${log.levelParsed} | ${log.msg} `
+        },
+      }),
+    )
+
+    const logeMessage = `testing the application`
+
+    logger.info(logeMessage)
+
+    await sleep(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
+
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.deepInclude(log.values[0][1], logeMessage)
+  })
 })

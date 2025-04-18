@@ -93,6 +93,7 @@ export class LogBuilder {
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
     structuredMetaKey?: string
+    formattingFunction?: (log: PinoLog) => string
   }): LokiLog {
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
@@ -104,6 +105,14 @@ export class LogBuilder {
     const structuredMetadata: Record<string, any> = options.structuredMetaKey
       ? options.log[options.structuredMetaKey]
       : undefined
+
+    const formattedMessage = options.formattingFunction
+      ? options.formattingFunction({
+          ...options.log,
+          levelParsed: this.#levelMap[options.log.level],
+          timeParsed: time,
+        })
+      : this.#stringifyLog(options.log, options.convertArrays)
 
     return {
       stream: {
@@ -117,8 +126,8 @@ export class LogBuilder {
         // if not present because olders versions of Loki will not accept
         // it and will return an error.
         structuredMetadata
-          ? [time, this.#stringifyLog(options.log, options.convertArrays), structuredMetadata]
-          : [time, this.#stringifyLog(options.log, options.convertArrays)],
+          ? [time, formattedMessage, structuredMetadata]
+          : [time, formattedMessage],
       ],
     }
   }

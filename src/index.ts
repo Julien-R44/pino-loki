@@ -20,6 +20,7 @@ function resolveOptions(options: LokiOptions) {
     propsToLabels: options.propsToLabels ?? [],
     convertArrays: options.convertArrays ?? false,
     structuredMetaKey: options.structuredMetaKey,
+    formattingFunction: options.formattingFunction,
   }
 }
 
