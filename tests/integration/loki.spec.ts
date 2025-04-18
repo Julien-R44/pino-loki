@@ -140,9 +140,7 @@ test.group('Loki integration', () => {
         ...credentials,
         batching: false,
         labels: { application },
-        formattingFunction: (log) => {
-          return `${log.timeParsed} | ${log.levelParsed} | ${log.msg} `
-        },
+        formattingTemplate: '${log.timeParsed} | ${log.levelParsed} | ${log.msg}',
       }),
     )
 
@@ -154,6 +152,34 @@ test.group('Loki integration', () => {
 
     const result = await LokiClient.getLogs(`{application="${application}"}`)
 
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.deepInclude(log.values[0][1], logeMessage)
+  })
+
+  test('send a custom format log in a worker', async ({ assert }) => {
+    const application = randomUUID()
+
+    const transport = pino.transport<LokiOptions>({
+      target: 'pino-loki',
+      options: {
+        batching: false,
+        ...credentials,
+        labels: { application },
+        formattingTemplate: '${log.timeParsed} | ${log.levelParsed} | ${log.msg}',
+      },
+    })
+    const logger = pino(transport)
+    const logeMessage = `testing the application in a worker`
+
+    logger.error(logeMessage)
+
+    await sleep(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
     assert.equal(result.status, 'success')
     assert.equal(result.data.result.length, 1)
 

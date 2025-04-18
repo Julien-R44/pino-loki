@@ -152,7 +152,7 @@ export interface LokiOptions {
   structuredMetaKey?: string
 
   /**
-   * Function to format the label before sending it to Loki.
+   * The template format the label before sending it to Loki.
    * This is useful if you want to change the string to be sent to loki to a different format.
    * Will replace the built-in stringified json function
    *
@@ -162,5 +162,5 @@ export interface LokiOptions {
    *
    * @returns string
    */
-  formattingFunction?: (label: PinoLog) => string
+  formattingTemplate?: string
 }

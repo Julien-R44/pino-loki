@@ -124,6 +124,33 @@ logger.info({ meta: { recordId: 123, traceId: 456 } }, 'Hello')
 
 Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
 
+
+#### `formattingTemplate`
+
+Defaults to `null`, this option will let you convert the json pino log into a single string in a format that you set. the template is a simple string (NOT A STRING LITERAL). 
+Here is an example configuration ([from integration tests](./tests/integration/loki.spec.ts)): 
+
+```typescript
+ const transport = pino.transport<LokiOptions>({
+    target: 'pino-loki',
+    options: {
+        (...)
+        formattingTemplate: '${log.timeParsed} | ${log.levelParsed} | ${log.msg}',
+        (...)
+    },
+})
+```
+
+The log object has the following options:
+
+- `log.levelParsed`: The pino log level parsed to Loki log level
+- `log.level`: The pino log level (number)
+- `log.timeParsed`: The pino log timestamp parsed to ISO string
+- `log.msg`: The pino log message (object messages will be "stringified")
+- `log.time`: time in nanoseconds
+
+You can use the above options in the template string.
+
 ## CLI usage
 ```shell
 npm install -g pino-loki

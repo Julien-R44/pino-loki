@@ -78,6 +78,23 @@ export class LogBuilder {
   }
 
   /**
+   * Handles formatting template strings for the last output
+   * @returns string
+   * @private
+   * @param template
+   * @param data
+   */
+  #handleTemplateString(template: string, data: Record<string, any>): string {
+    return template?.replace(/\${([\w.]+)}/g, (_, key) => {
+      const value = key.split('.').reduce((acc: any, part: any) => acc?.[part], data)
+      if (typeof value === 'object') {
+        return this.#stringifyLog(value)
+      }
+      return value !== undefined ? value : ''
+    })
+  }
+
+  /**
    * Convert a level to a human readable status
    */
   statusFromLevel(level: number) {
@@ -93,7 +110,7 @@ export class LogBuilder {
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
     structuredMetaKey?: string
-    formattingFunction?: (log: PinoLog) => string
+    formattingTemplate?: string
   }): LokiLog {
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
@@ -106,11 +123,13 @@ export class LogBuilder {
       ? options.log[options.structuredMetaKey]
       : undefined
 
-    const formattedMessage = options.formattingFunction
-      ? options.formattingFunction({
-          ...options.log,
-          levelParsed: this.#levelMap[options.log.level],
-          timeParsed: time,
+    const formattedMessage = options.formattingTemplate
+      ? this.#handleTemplateString(options.formattingTemplate, {
+          log: {
+            ...options.log,
+            levelParsed: this.#levelMap[options.log.level],
+            timeParsed: new Date(options.log.time ?? 0).toISOString(),
+          },
         })
       : this.#stringifyLog(options.log, options.convertArrays)
 

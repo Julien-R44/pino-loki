@@ -59,7 +59,7 @@ export class LogPusher {
         additionalLabels: this.#options.labels,
         convertArrays: this.#options.convertArrays,
         structuredMetaKey: this.#options.structuredMetaKey,
-        formattingFunction: this.#options.formattingFunction,
+        formattingTemplate: this.#options.formattingTemplate,
       }),
     )
 
