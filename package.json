@@ -59,7 +59,6 @@
     "checks": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
-    "commander": "^12.1.0",
     "pino-abstract-transport": "^2.0.0",
     "pump": "^3.0.2"
   },
