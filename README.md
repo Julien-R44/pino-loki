@@ -5,7 +5,7 @@
 This module provides a transport for pino that forwards messages to a Loki instance.
 
 ## Why pino-loki
-Pino-loki is based upon the highly performant logging library pino. Loki usually gets the logs through Promtail which reads system logs from files. This setup may not always be possible or require additional infrastructure, especially in situations where logs are gathered application code deployed as a SaaS in the cloud. Pino-loki sends the pino logs directly to Loki.
+Pino-loki is based upon the highly performant logging library pino. Loki usually gets the logs through Grafana Agent which reads system logs from files. This setup may not always be possible or require additional infrastructure, especially in situations where logs are gathered application code deployed as a SaaS in the cloud. Pino-loki sends the pino logs directly to Loki.
 
 Pino-loki is for Pino v7.0.0 and above, so the module can be configured to operate in a worker thread, which is the recommended way to use it.
 
