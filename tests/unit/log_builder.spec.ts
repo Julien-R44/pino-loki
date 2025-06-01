@@ -1,9 +1,9 @@
 import { test } from '@japa/runner'
+import { setTimeout } from 'node:timers/promises'
 
-import { sleep } from '../../src/utils'
-import { LokiLogLevel } from '../../src/types'
-import type { PinoLog } from '../../src/types'
-import { LogBuilder } from '../../src/log_builder'
+import type { PinoLog } from '../../src/types.ts'
+import { LogBuilder } from '../../src/log_builder.ts'
+import { LokiLogLevel } from '../../src/constants.ts'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()
@@ -76,7 +76,7 @@ test.group('Log Builder', () => {
       v: 1,
     }
 
-    await sleep(1000)
+    await setTimeout(1000)
 
     const lokiLog = logBuilder.build({
       log,

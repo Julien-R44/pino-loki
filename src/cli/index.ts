@@ -1,11 +1,11 @@
 import pump from 'pump'
 import { parseArgs } from 'node:util'
 
-import build from '../index'
-import { options } from './args'
-import pkg from '../../package.json'
-import { printHelp } from './print_help'
-import type { LokiOptions } from '../types'
+import build from '../index.ts'
+import { options } from './args.ts'
+import { printHelp } from './print_help.ts'
+import type { LokiOptions } from '../types.ts'
+import pkg from '../../package.json' with { type: 'json' }
 
 /**
  * Create a PinoLokiOptionsContract from cli arguments

@@ -1,6 +1,6 @@
-import debug from './debug'
-import { LogBuilder } from './log_builder'
-import type { PinoLog, LokiOptions } from './types'
+import debug from './debug.ts'
+import { LogBuilder } from './log_builder.ts'
+import type { PinoLog, LokiOptions } from './types.ts'
 
 class RequestError extends Error {
   responseBody: string

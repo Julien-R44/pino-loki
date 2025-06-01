@@ -1,4 +1,5 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { julr } = require('@julr/tooling-configs/eslint')
+import { julr } from '@julr/tooling-configs/eslint'
 
-module.exports = julr({ ignores: ['examples/adonisjs/**/*'] })
+export default julr({
+  ignores: ['examples/adonisjs/**/*'],
+})

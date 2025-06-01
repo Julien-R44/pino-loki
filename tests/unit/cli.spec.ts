@@ -1,6 +1,6 @@
 import { test } from '@japa/runner'
 
-import { createPinoLokiConfigFromArgs } from '../../src/cli'
+import { createPinoLokiConfigFromArgs } from '../../src/cli/index.ts'
 
 test.group('Cli', () => {
   test('Should parse custom labels', ({ assert }) => {

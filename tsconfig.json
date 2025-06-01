@@ -1,14 +1,12 @@
 {
-  "ts-node": {
-    "transpileOnly": true
-  },
-
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext"],
     "rootDir": "./",
-    "module": "CommonJS",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true,
+    "allowImportingTsExtensions": true,
     "strictBindCallApply": true,
     "strictFunctionTypes": true,
     "strictNullChecks": true,
@@ -19,12 +17,14 @@
     "noUnusedParameters": true,
     "declaration": true,
     "declarationMap": true,
+    "noEmit": true,
     "outDir": "./dist",
     "removeComments": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
+    "verbatimModuleSyntax": true,
     "skipLibCheck": true
   },
 

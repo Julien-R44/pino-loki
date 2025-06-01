@@ -1,9 +1,9 @@
 import abstractTransportBuild from 'pino-abstract-transport'
 
-import debug from './debug'
-import { LokiLogLevel } from './types'
-import { LogPusher } from './log_pusher'
-import type { PinoLog, LokiOptions } from './types'
+import debug from './debug.ts'
+import { LogPusher } from './log_pusher.ts'
+import { LokiLogLevel } from './constants.ts'
+import type { PinoLog, LokiOptions } from './types.ts'
 
 /**
  * Resolves the options for the Pino Loki transport

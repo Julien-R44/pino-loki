@@ -1,4 +1,4 @@
-import type { CustomParseArgsOptionsConfig } from './args'
+import type { CustomParseArgsOptionsConfig } from './args.ts'
 
 export function printHelp(opts: CustomParseArgsOptionsConfig) {
   console.log(`Usage: pino-loki [options]\n\nOptions:`)

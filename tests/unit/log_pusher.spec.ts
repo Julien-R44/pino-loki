@@ -2,7 +2,7 @@ import { test } from '@japa/runner'
 import { setupServer } from 'msw/node'
 import { http, HttpResponse } from 'msw'
 
-import { LogPusher } from '../../src/log_pusher'
+import { LogPusher } from '../../src/log_pusher.ts'
 
 test.group('LogPusher', (group) => {
   const server = setupServer(

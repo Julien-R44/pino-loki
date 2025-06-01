@@ -1,8 +1,7 @@
 import 'dotenv/config'
 
 import { assert } from '@japa/assert'
-import { specReporter } from '@japa/spec-reporter'
-import { processCliArgs, configure, run } from '@japa/runner'
+import { processCLIArgs, configure, run } from '@japa/runner'
 
 /*
 |--------------------------------------------------------------------------
@@ -12,17 +11,16 @@ import { processCliArgs, configure, run } from '@japa/runner'
 | The configure method accepts the configuration to configure the Japa
 | tests runner.
 |
-| The first method call "processCliArgs" process the command line arguments
+| The first method call "processCLIArgs" process the command line arguments
 | and turns them into a config object. Using this method is not mandatory.
 |
 | Please consult japa.dev/runner-config for the config docs.
 */
+processCLIArgs(process.argv.splice(2))
+
 configure({
-  ...processCliArgs(process.argv.slice(2)),
   plugins: [assert()],
-  reporters: [specReporter()],
   forceExit: true,
-  importer: (filePath) => import(filePath),
   suites: [
     {
       name: 'unit',
