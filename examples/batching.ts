@@ -10,7 +10,7 @@ import type { LokiOptions } from '../src/types.ts'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
-  target: '../dist/index.mjs',
+  target: '../dist/index.js',
 
   options: {
     batching: true,

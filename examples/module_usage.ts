@@ -10,7 +10,7 @@ import 'dotenv/config'
 
 import { pino } from 'pino'
 
-import pinoLoki from '../src/index.ts'
+import { pinoLoki } from '../src/index.ts'
 
 const logger = pino(
   { level: 'info' },

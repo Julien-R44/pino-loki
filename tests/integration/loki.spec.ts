@@ -3,8 +3,8 @@ import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
 import { setTimeout } from 'node:timers/promises'
 
-import pinoLoki from '../../src/index.ts'
 import { LokiClient } from '../helpers.ts'
+import { pinoLoki } from '../../src/index.ts'
 import type { LokiOptions } from '../../src/types.ts'
 
 const credentials = {
@@ -100,8 +100,7 @@ test.group('Loki integration', () => {
     const application = randomUUID()
 
     const logger = pino.transport<LokiOptions>({
-      target: '../../dist/index.cjs',
-
+      target: '../../dist/index.js',
       options: {
         ...credentials,
         batching: true,

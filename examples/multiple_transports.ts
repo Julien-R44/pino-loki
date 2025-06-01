@@ -6,7 +6,7 @@ const transport = pino.transport({
   targets: [
     {
       // 👇 Replace this with "pino-loki"
-      target: '../dist/index.mjs',
+      target: '../dist/index.js',
 
       level: 'info',
       options: {
