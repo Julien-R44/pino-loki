@@ -3,7 +3,7 @@ import { test } from '@japa/runner'
 import { LokiLogLevel } from '../../src/constants.ts'
 import { formatLog } from '../../src/format_mesage.ts'
 
-test.group('Format Message', (group) => {
+test.group('Format Message', () => {
   test('basic template string', ({ assert }) => {
     const result = formatLog({
       log: {
