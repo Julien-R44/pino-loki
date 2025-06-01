@@ -1,3 +1,5 @@
+import type { LogDescriptor } from 'pino'
+
 import type { LokiLogLevel } from './constants.ts'
 
 type Timestamp = string
@@ -138,4 +140,20 @@ export interface LokiOptions {
    */
   // TODO: This should be `meta` by default when major version is bumped
   structuredMetaKey?: string
+
+  /**
+   * Format output of log that will be sent to Loki.
+   * @default false
+   */
+  logFormat?: LogFormat
 }
+
+export type LogFormatExpectedObject = LogDescriptor & {
+  lokilevel: LokiLogLevel
+  time: number
+  level: number
+  msg?: string
+  [key: string]: any
+}
+
+export type LogFormat = false | string | ((log: LogFormatExpectedObject) => string)

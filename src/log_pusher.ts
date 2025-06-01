@@ -59,6 +59,7 @@ export class LogPusher {
         additionalLabels: this.#options.labels,
         convertArrays: this.#options.convertArrays,
         structuredMetaKey: this.#options.structuredMetaKey,
+        logFormat: this.#options.logFormat,
       }),
     )
 

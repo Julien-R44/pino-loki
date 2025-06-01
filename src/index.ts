@@ -20,6 +20,7 @@ function resolveOptions(options: LokiOptions) {
     propsToLabels: options.propsToLabels ?? [],
     convertArrays: options.convertArrays ?? false,
     structuredMetaKey: options.structuredMetaKey,
+    logFormat: options.logFormat,
   }
 }
 
@@ -72,4 +73,4 @@ function pinoLoki(userOptions: LokiOptions) {
 }
 
 export default pinoLoki
-export { LokiLogLevel, pinoLoki, type LokiOptions }
+export { LokiLogLevel, pinoLoki, type LokiOptions, type PinoLog }

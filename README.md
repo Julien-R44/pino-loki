@@ -124,6 +124,68 @@ logger.info({ meta: { recordId: 123, traceId: 456 } }, 'Hello')
 
 Defaults to `false`. As documented in the [Loki documentation](https://grafana.com/docs/loki/latest/query/log_queries/#json), Loki JSON parser will skip arrays. Setting this options to `true` will convert arrays to object with index as key. For example, `["foo", "bar"]` will be converted to `{ "0": "foo", "1": "bar" }`.
 
+
+#### `logFormat`
+
+Defaults to `false`. This option will let you convert the JSON pino log into a single string in a format that you set. 
+The template can be either a string template ( not a string literal ! ) or a function that returns a string.
+You can use dot notation to access nested properties in the pino log object, such as `{req.method}` or `{req.url}`.
+
+```typescript
+ const transport = pino.transport<LokiOptions>({
+    target: 'pino-loki',
+    options: {
+      // String template
+      logFormat: '{time} | {level} | {msg} {req.method} {req.url}',
+      // Or a function ⚠️ Will not work out-of-the-box 
+      // with worker threads. Read the warning below !
+      logFormat: ({ time, level, msg, req }) => {
+        return `${time} | ${level} | ${msg} ${req.method} ${req.url}`;
+      },
+    },
+})
+```
+> [!NOTE]
+> Want to use the `logFormat` option with worker threads? Check the below section about [Handling non-serializable options](#handling-non-serializable-options).
+
+The log object has the following options:
+
+- `lokiLevel`: The pino log level parsed to Loki log level ( 'debug', 'info', 'warning' etc.. )
+- `{key}`: Any other key in the pino log object, such as `pid`, `hostname`, `msg` etc.
+
+
+
+### Handling non-serializable options
+
+Using the new pino v7+ transports not all options are serializable, for example if you want to use `logFormat` as a function you will need to wrap `pino-loki` in a custom module like this : 
+
+```ts
+// main.ts
+import pino from 'pino'
+
+const logger = pino({
+  transport: {
+    target: './my-custom-pino-loki.js',
+    options: { labels: { application: 'MY-APP' } }
+  },
+})
+```
+
+```ts
+// my-custom-pino-loki.js
+import { pinoLoki } from 'pino-loki'
+
+export default function customPinoLoki(options) {
+  return pinoLoki({
+    ...options,
+    logFormat: (log) => {
+      return `hello ${log.msg} ${log.lokilevel} ${log.req.id} ${log.level}`
+    },
+  })
+}
+```
+
+This way you can use the `logFormat` option as a function, or any other non-serializable option.
 ## CLI usage
 ```shell
 npm install -g pino-loki

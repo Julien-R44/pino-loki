@@ -125,7 +125,7 @@ test.group('Log Builder', () => {
   test('should convert timestamps to nanoseconds', ({ assert }) => {
     const logBuilder = new LogBuilder()
 
-    const now = new Date().getTime().toString()
+    const now = new Date().getTime()
 
     const lokiLog = logBuilder.build({
       log: { hostname: 'localhost', level: 30, msg: 'hello world', time: now },

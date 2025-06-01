@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
 import { setTimeout } from 'node:timers/promises'
@@ -128,5 +129,58 @@ test.group('Loki integration', () => {
 
     assert.equal(firstStream.stream.application, application)
     assert.equal(firstStream.values.length, 3)
+  })
+
+  test('use custom transport worker with custom message format function', async ({ assert }) => {
+    const application = randomUUID()
+
+    const transport = pino.transport<LokiOptions>({
+      target: join(import.meta.dirname, '../fixtures/custom_pino_loki.js'),
+      options: { batching: false, ...credentials, labels: { application } },
+    })
+
+    const logger = pino(transport)
+    // See tests/fixtures/custom_pino_loki.ts for the custom message format function
+    const logMessage = `hello yup! info 432 30`
+
+    logger.info({ req: { id: 432 } }, 'yup!')
+
+    await setTimeout(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.deepInclude(log.values[0][1], logMessage)
+  })
+
+  test('use logFormat template to format log messages', async ({ assert }) => {
+    const application = randomUUID()
+
+    const transport = pino.transport<LokiOptions>({
+      target: '../../dist/index.js',
+      options: {
+        ...credentials,
+        batching: false,
+        labels: { application },
+        logFormat: '{msg} {req.id} {level}',
+      },
+    })
+
+    const logger = pino(transport)
+
+    logger.info({ req: { id: 432 } }, 'yup!')
+
+    await setTimeout(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.deepInclude(log.values[0][1], 'yup! 432 30')
   })
 })

@@ -1,5 +1,6 @@
 import { LokiLogLevel } from './constants.ts'
-import type { LokiLog, PinoLog, LokiOptions } from './types.ts'
+import { formatLog } from './format_mesage.ts'
+import type { LokiLog, PinoLog, LokiOptions, LogFormat, LogFormatExpectedObject } from './types.ts'
 
 const NANOSECONDS_LENGTH = 19
 
@@ -93,6 +94,7 @@ export class LogBuilder {
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
     structuredMetaKey?: string
+    logFormat?: LogFormat
   }): LokiLog {
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
@@ -104,6 +106,13 @@ export class LogBuilder {
     const structuredMetadata: Record<string, any> = options.structuredMetaKey
       ? options.log[options.structuredMetaKey]
       : undefined
+
+    const formattedMessage = options.logFormat
+      ? formatLog({
+          logFormat: options.logFormat,
+          log: { ...options.log, lokilevel: status } as LogFormatExpectedObject,
+        })
+      : this.#stringifyLog(options.log, options.convertArrays)
 
     return {
       stream: {
@@ -117,8 +126,8 @@ export class LogBuilder {
         // if not present because olders versions of Loki will not accept
         // it and will return an error.
         structuredMetadata
-          ? [time, this.#stringifyLog(options.log, options.convertArrays), structuredMetadata]
-          : [time, this.#stringifyLog(options.log, options.convertArrays)],
+          ? [time, formattedMessage, structuredMetadata]
+          : [time, formattedMessage],
       ],
     }
   }
