@@ -32,7 +32,7 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.cts",
   "bin": {
-    "pino-loki": "dist/cli.cjs"
+    "pino-loki": "dist/cli.js"
   },
   "files": [
     "dist"
