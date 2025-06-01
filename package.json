@@ -23,22 +23,14 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
   "bin": {
     "pino-loki": "dist/cli.cjs"
   },
@@ -46,13 +38,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && unbuild",
-    "dev": "unbuild --stub",
+    "build": "tsdown",
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepublishOnly": "pnpm build",
     "release": "bumpp --commit --push --tag && pnpm publish",
-    "stub": "unbuild --stub",
     "quick:test": "node --experimental-strip-types bin/test.ts",
     "test": "c8 node --experimental-strip-types bin/test.ts",
     "typecheck": "tsc --noEmit",
@@ -77,9 +67,8 @@
     "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.5.3",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.8.3",
-    "unbuild": "^3.5.0"
+    "tsdown": "^0.12.6",
+    "typescript": "^5.8.3"
   },
   "prettier": "@julr/tooling-configs/prettier"
 }

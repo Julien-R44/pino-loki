@@ -1,8 +1,10 @@
+#!/usr/bin/env node
+
 import pump from 'pump'
 import { parseArgs } from 'node:util'
 
-import build from '../index.ts'
 import { options } from './args.ts'
+import { pinoLoki } from '../index.ts'
 import { printHelp } from './print_help.ts'
 import type { LokiOptions } from '../types.ts'
 import pkg from '../../package.json' with { type: 'json' }
@@ -66,8 +68,7 @@ export const createPinoLokiConfigFromArgs = () => {
 }
 
 function main() {
-  const pinoLoki = build(createPinoLokiConfigFromArgs())
-  pump(process.stdin, pinoLoki)
+  pump(process.stdin, pinoLoki(createPinoLokiConfigFromArgs()))
 }
 
 main()
