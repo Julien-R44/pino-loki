@@ -87,6 +87,10 @@ export const options = {
     default: false,
     help: 'Disable output to stdout',
   },
+  'headers': {
+    type: 'string',
+    help: 'Custom headers to be sent with the request to Loki (comma separated key=value pairs)',
+  },
   'help': {
     type: 'boolean',
     short: 'h',

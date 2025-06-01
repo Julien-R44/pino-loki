@@ -23,4 +23,19 @@ test.group('Cli', () => {
 
     assert.equal(ret.structuredMetaKey, 'foo')
   })
+
+  test('pass headers', ({ assert }) => {
+    process.argv = [
+      'node',
+      'src/cli.ts',
+      '--headers',
+      'x-custom-header=value,x-another-header=another-value',
+    ]
+    const ret = createPinoLokiConfigFromArgs()
+
+    assert.deepEqual(ret.headers, {
+      'x-custom-header': 'value',
+      'x-another-header': 'another-value',
+    })
+  })
 })

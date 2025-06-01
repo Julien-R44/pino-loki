@@ -7,11 +7,29 @@ import { printHelp } from './print_help.ts'
 import type { LokiOptions } from '../types.ts'
 import pkg from '../../package.json' with { type: 'json' }
 
+export function validateHeaders(headers: string): Record<string, string> {
+  const headerPairs = headers.split(',').map((pair) => pair.trim())
+  const headerObject: Record<string, string> = {}
+
+  for (const pair of headerPairs) {
+    const [key, value] = pair.split('=').map((part) => part.trim())
+    if (!key || !value)
+      throw new Error(`Invalid header format: "${pair}". Expected format is "key=value".`)
+
+    headerObject[key] = value
+  }
+
+  return headerObject
+}
+
 /**
  * Create a PinoLokiOptionsContract from cli arguments
  */
 export const createPinoLokiConfigFromArgs = () => {
   const { values } = parseArgs({ options })
+
+  console.log('tg')
+  console.log(values)
 
   if (values.help) {
     printHelp(options)
@@ -40,6 +58,7 @@ export const createPinoLokiConfigFromArgs = () => {
     propsToLabels: propsLabels,
     structuredMetaKey: values.structuredMetaKey,
     convertArrays: values.convertArrays,
+    headers: values.headers ? validateHeaders(values.headers) : undefined,
   }
 
   if (values.user && values.password) {
@@ -50,8 +69,7 @@ export const createPinoLokiConfigFromArgs = () => {
 }
 
 function main() {
-  const config = createPinoLokiConfigFromArgs()
-  const pinoLoki = build(config)
+  const pinoLoki = build(createPinoLokiConfigFromArgs())
   pump(process.stdin, pinoLoki)
 }
 
