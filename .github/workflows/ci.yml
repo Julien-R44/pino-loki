@@ -59,8 +59,5 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Stub
-        run: pnpm stub
-
       - name: Test
         run: pnpm test
