@@ -28,9 +28,6 @@ export function validateHeaders(headers: string): Record<string, string> {
 export const createPinoLokiConfigFromArgs = () => {
   const { values } = parseArgs({ options })
 
-  console.log('tg')
-  console.log(values)
-
   if (values.help) {
     printHelp(options)
     process.exit(0)
