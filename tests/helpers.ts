@@ -9,7 +9,6 @@ interface QueryRangeResponse<StreamType extends Record<string, string>> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class LokiClient {
   static async getLogs(query: string) {
     const url = new URL('loki/api/v1/query_range', process.env.LOKI_HOST!)

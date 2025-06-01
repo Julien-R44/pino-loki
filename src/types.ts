@@ -1,13 +1,4 @@
-/**
- * Different log levels detected by loki
- */
-export enum LokiLogLevel {
-  Info = 'info',
-  Debug = 'debug',
-  Error = 'error',
-  Warning = 'warning',
-  Critical = 'critical',
-}
+import type { LokiLogLevel } from './constants.ts'
 
 type Timestamp = string
 

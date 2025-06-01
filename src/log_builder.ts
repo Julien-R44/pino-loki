@@ -1,5 +1,5 @@
-import { LokiLogLevel } from './types'
-import type { LokiLog, PinoLog, LokiOptions } from './types'
+import { LokiLogLevel } from './constants.ts'
+import type { LokiLog, PinoLog, LokiOptions } from './types.ts'
 
 const NANOSECONDS_LENGTH = 19
 

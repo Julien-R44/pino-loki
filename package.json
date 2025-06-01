@@ -1,8 +1,8 @@
 {
   "name": "pino-loki",
-  "type": "commonjs",
+  "type": "module",
   "version": "2.5.0",
-  "packageManager": "pnpm@9.9.0",
+  "packageManager": "pnpm@10.11.0",
   "description": "A transport for pino that sends messages to Loki",
   "author": "Julien Ripouteau <julien@ripouteau.com>",
   "license": "MIT",
@@ -23,65 +23,52 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
+    },
+    "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/*",
-        "./dist/index.d.ts"
-      ]
-    }
-  },
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
   "bin": {
-    "pino-loki": "dist/cli.cjs"
+    "pino-loki": "dist/cli.js"
   },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "rimraf dist && unbuild",
-    "dev": "unbuild --stub",
+    "build": "tsdown",
     "lint": "eslint .",
     "format": "prettier --write .",
     "prepublishOnly": "pnpm build",
     "release": "bumpp --commit --push --tag && pnpm publish",
-    "stub": "unbuild --stub",
-    "quick:test": "node -r ts-node/register bin/test.ts",
-    "test": "c8 node -r ts-node/register bin/test.ts",
+    "quick:test": "node --experimental-strip-types bin/test.ts",
+    "test": "c8 node --experimental-strip-types bin/test.ts",
     "typecheck": "tsc --noEmit",
     "checks": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
-    "commander": "^12.1.0",
     "pino-abstract-transport": "^2.0.0",
     "pump": "^3.0.2"
   },
   "devDependencies": {
-    "@japa/assert": "^1.4.1",
-    "@japa/runner": "^2.5.1",
+    "@japa/assert": "^4.0.1",
+    "@japa/runner": "^4.2.0",
     "@japa/spec-reporter": "^1.3.3",
-    "@julr/tooling-configs": "^2.2.0",
-    "@types/node": "^22.10.1",
+    "@julr/tooling-configs": "^4.0.0",
+    "@types/node": "^22.15.29",
     "@types/pump": "^1.1.3",
-    "bumpp": "^9.8.1",
-    "c8": "^10.1.2",
-    "dotenv": "^16.4.5",
-    "eslint": "^8.57.1",
-    "msw": "^2.6.6",
-    "pino": "^9.5.0",
-    "pino-pretty": "^11.3.0",
-    "prettier": "^3.4.1",
-    "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.7.2",
-    "unbuild": "^2.0.0"
+    "bumpp": "^10.1.1",
+    "c8": "^10.1.3",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.28.0",
+    "msw": "^2.8.7",
+    "pino": "^9.7.0",
+    "pino-pretty": "^13.0.0",
+    "prettier": "^3.5.3",
+    "tsdown": "^0.12.6",
+    "typescript": "^5.8.3"
   },
   "prettier": "@julr/tooling-configs/prettier"
 }

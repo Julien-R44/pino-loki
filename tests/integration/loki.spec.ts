@@ -1,11 +1,11 @@
 import { pino } from 'pino'
 import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
+import { setTimeout } from 'node:timers/promises'
 
-import pinoLoki from '../../src/index'
-import { sleep } from '../../src/utils'
-import { LokiClient } from '../helpers'
-import type { LokiOptions } from '../../src/types'
+import { LokiClient } from '../helpers.ts'
+import { pinoLoki } from '../../src/index.ts'
+import type { LokiOptions } from '../../src/types.ts'
 
 const credentials = {
   host: process.env.LOKI_HOST!,
@@ -27,7 +27,7 @@ test.group('Loki integration', () => {
 
     logger.info({ test: application })
 
-    await sleep(300)
+    await setTimeout(300)
 
     const result = await LokiClient.getLogs(`{application="${application}"}`)
 
@@ -59,7 +59,7 @@ test.group('Loki integration', () => {
     logger.error({ type: 'error' })
     logger.fatal({ type: 'fatal' })
 
-    await sleep(600)
+    await setTimeout(600)
     const result = await LokiClient.getLogs(`{application="${application}"}`)
 
     assert.equal(result.status, 'success')
@@ -86,7 +86,7 @@ test.group('Loki integration', () => {
     logger.warn({ test: 2 })
     logger.fatal({ test: 3 })
 
-    await sleep(1200)
+    await setTimeout(1200)
     const result = await LokiClient.getLogs(`{application="${application}"}`)
 
     assert.equal(result.status, 'success')
@@ -100,8 +100,7 @@ test.group('Loki integration', () => {
     const application = randomUUID()
 
     const logger = pino.transport<LokiOptions>({
-      target: '../../dist/index.cjs',
-
+      target: '../../dist/index.js',
       options: {
         ...credentials,
         batching: true,
@@ -120,7 +119,7 @@ test.group('Loki integration', () => {
     // when the main process exits
     logger.end()
 
-    await sleep(1000)
+    await setTimeout(1000)
 
     const result = await LokiClient.getLogs(`{application="${application}"}`)
     assert.equal(result.status, 'success')

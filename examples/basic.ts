@@ -2,12 +2,12 @@ import 'dotenv/config'
 
 import { pino } from 'pino'
 
-import { LokiLogLevel } from '../src/types'
-import type { LokiOptions } from '../src/types'
+import { LokiLogLevel } from '../src/constants.ts'
+import type { LokiOptions } from '../src/types.ts'
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
-  target: '../dist/index.mjs',
+  target: '../dist/index.js',
 
   options: {
     // These labels will be added to every log

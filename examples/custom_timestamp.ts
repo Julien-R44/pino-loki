@@ -12,7 +12,7 @@ import 'dotenv/config'
 
 import { pino } from 'pino'
 
-import type { LokiOptions } from '../src/index'
+import type { LokiOptions } from '../src/index.ts'
 
 const loadNs = process.hrtime()
 const loadMs = new Date().getTime()
@@ -24,7 +24,7 @@ function nanoseconds() {
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
-  target: '../dist/index.mjs',
+  target: '../dist/index.js',
 
   options: {
     // These labels will be added to every log
