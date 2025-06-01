@@ -1,5 +1,6 @@
 import { LokiLogLevel } from './constants.ts'
-import type { LokiLog, PinoLog, LokiOptions } from './types.ts'
+import { formatLog } from './format_mesage.ts'
+import type { LokiLog, PinoLog, LokiOptions, LogFormat, LogFormatExpectedObject } from './types.ts'
 
 const NANOSECONDS_LENGTH = 19
 
@@ -78,23 +79,6 @@ export class LogBuilder {
   }
 
   /**
-   * Handles formatting template strings for the last output
-   * @returns string
-   * @private
-   * @param template
-   * @param data
-   */
-  #handleTemplateString(template: string, data: Record<string, any>): string {
-    return template?.replace(/\${([\w.]+)}/g, (_, key) => {
-      const value = key.split('.').reduce((acc: any, part: any) => acc?.[part], data)
-      if (typeof value === 'object') {
-        return this.#stringifyLog(value)
-      }
-      return value !== undefined ? value : ''
-    })
-  }
-
-  /**
    * Convert a level to a human readable status
    */
   statusFromLevel(level: number) {
@@ -110,7 +94,7 @@ export class LogBuilder {
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
     structuredMetaKey?: string
-    formattingTemplate?: string
+    logFormat?: LogFormat
   }): LokiLog {
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
@@ -123,13 +107,10 @@ export class LogBuilder {
       ? options.log[options.structuredMetaKey]
       : undefined
 
-    const formattedMessage = options.formattingTemplate
-      ? this.#handleTemplateString(options.formattingTemplate, {
-          log: {
-            ...options.log,
-            levelParsed: this.#levelMap[options.log.level],
-            timeParsed: new Date(options.log.time ?? 0).toISOString(),
-          },
+    const formattedMessage = options.logFormat
+      ? formatLog({
+          logFormat: options.logFormat,
+          log: { ...options.log, lokilevel: status } as LogFormatExpectedObject,
         })
       : this.#stringifyLog(options.log, options.convertArrays)
 

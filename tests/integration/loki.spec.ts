@@ -1,4 +1,5 @@
 import { pino } from 'pino'
+import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
 import { setTimeout } from 'node:timers/promises'
@@ -130,53 +131,21 @@ test.group('Loki integration', () => {
     assert.equal(firstStream.values.length, 3)
   })
 
-  test('send a custom format log', async ({ assert }) => {
-    const application = randomUUID()
-
-    const logger = pino(
-      { level: 'info' },
-      pinoLoki({
-        ...credentials,
-        batching: false,
-        labels: { application },
-        formattingTemplate: '${log.timeParsed} | ${log.levelParsed} | ${log.msg}',
-      }),
-    )
-
-    const logeMessage = `testing the application`
-
-    logger.info(logeMessage)
-
-    await sleep(300)
-
-    const result = await LokiClient.getLogs(`{application="${application}"}`)
-
-    assert.equal(result.status, 'success')
-    assert.equal(result.data.result.length, 1)
-
-    const log = result.data.result[0]
-    assert.equal(log.stream.application, application)
-    assert.deepInclude(log.values[0][1], logeMessage)
-  })
-
-  test('send a custom format log in a worker', async ({ assert }) => {
+  test('use custom transport worker with custom message format function', async ({ assert }) => {
     const application = randomUUID()
 
     const transport = pino.transport<LokiOptions>({
-      target: 'pino-loki',
-      options: {
-        batching: false,
-        ...credentials,
-        labels: { application },
-        formattingTemplate: '${log.timeParsed} | ${log.levelParsed} | ${log.msg}',
-      },
+      target: join(import.meta.dirname, '../fixtures/custom_pino_loki.js'),
+      options: { batching: false, ...credentials, labels: { application } },
     })
+
     const logger = pino(transport)
-    const logeMessage = `testing the application in a worker`
+    // See tests/fixtures/custom_pino_loki.ts for the custom message format function
+    const logMessage = `hello yup! info 432 30`
 
-    logger.error(logeMessage)
+    logger.info({ req: { id: 432 } }, 'yup!')
 
-    await sleep(300)
+    await setTimeout(300)
 
     const result = await LokiClient.getLogs(`{application="${application}"}`)
     assert.equal(result.status, 'success')
@@ -184,6 +153,34 @@ test.group('Loki integration', () => {
 
     const log = result.data.result[0]
     assert.equal(log.stream.application, application)
-    assert.deepInclude(log.values[0][1], logeMessage)
+    assert.deepInclude(log.values[0][1], logMessage)
+  })
+
+  test('use logFormat template to format log messages', async ({ assert }) => {
+    const application = randomUUID()
+
+    const transport = pino.transport<LokiOptions>({
+      target: '../../dist/index.js',
+      options: {
+        ...credentials,
+        batching: false,
+        labels: { application },
+        logFormat: '{msg} {req.id} {level}',
+      },
+    })
+
+    const logger = pino(transport)
+
+    logger.info({ req: { id: 432 } }, 'yup!')
+
+    await setTimeout(300)
+
+    const result = await LokiClient.getLogs(`{application="${application}"}`)
+    assert.equal(result.status, 'success')
+    assert.equal(result.data.result.length, 1)
+
+    const log = result.data.result[0]
+    assert.equal(log.stream.application, application)
+    assert.deepInclude(log.values[0][1], 'yup! 432 30')
   })
 })

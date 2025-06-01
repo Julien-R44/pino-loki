@@ -1,3 +1,5 @@
+import type { LogDescriptor } from 'pino'
+
 import type { LokiLogLevel } from './constants.ts'
 
 type Timestamp = string
@@ -23,9 +25,6 @@ export interface LokiLog {
 export interface PinoLog {
   level: number
   msg?: string
-  levelParsed?: string
-  time?: number
-  timeParsed?: string
   [key: string]: any
 }
 
@@ -143,15 +142,18 @@ export interface LokiOptions {
   structuredMetaKey?: string
 
   /**
-   * The template format the label before sending it to Loki.
-   * This is useful if you want to change the string to be sent to loki to a different format.
-   * Will replace the built-in stringified json function
-   *
-   * @default undefined
-   *
-   * @param label
-   *
-   * @returns string
+   * Format output of log that will be sent to Loki.
+   * @default false
    */
-  formattingTemplate?: string
+  logFormat?: LogFormat
 }
+
+export type LogFormatExpectedObject = LogDescriptor & {
+  lokilevel: LokiLogLevel
+  time: number
+  level: number
+  msg?: string
+  [key: string]: any
+}
+
+export type LogFormat = false | string | ((log: LogFormatExpectedObject) => string)
