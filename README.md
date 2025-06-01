@@ -138,6 +138,7 @@ Options:
   -p, --password <password>      Loki password
   --hostname <hostname>          URL for Loki
   --endpoint <endpoint>          Path to the Loki push API
+  --headers <headers>            Headers to be sent to Loki (Example: "X-Scope-OrgID=your-id,another-header=another-value")
   -b, --batch                    Should logs be sent in batch mode
   -i, --interval <interval>      The interval at which batched logs are sent in seconds
   -t, --timeout <timeout>        Timeout for request to Loki
