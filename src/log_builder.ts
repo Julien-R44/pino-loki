@@ -78,6 +78,16 @@ export class LogBuilder {
     return labels
   }
 
+  #createStructuredMetadata(log: PinoLog, structuredMetaKey?: string): Record<string, any> | undefined {
+    if (!structuredMetaKey) return undefined
+
+    const result: Record<string, string> = {}
+    for (const [key, value] of Object.entries(log[structuredMetaKey])) {
+      result[key] = typeof value === 'string' ? value : String(value)
+    }
+    return result
+  }
+
   /**
    * Convert a level to a human readable status
    */
@@ -103,9 +113,7 @@ export class LogBuilder {
     const hostname = options.log.hostname
     options.log.hostname = undefined
 
-    const structuredMetadata: Record<string, any> = options.structuredMetaKey
-      ? options.log[options.structuredMetaKey]
-      : undefined
+    const structuredMetadata = this.#createStructuredMetadata(options.log, options.structuredMetaKey)
 
     const formattedMessage = options.logFormat
       ? formatLog({
