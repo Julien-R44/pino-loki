@@ -113,7 +113,10 @@ export class LogBuilder {
     const hostname = options.log.hostname
     options.log.hostname = undefined
 
-    const structuredMetadata = this.#createStructuredMetadata(options.log, options.structuredMetaKey)
+    const structuredMetadata = this.#createStructuredMetadata(
+      options.log,
+      options.structuredMetaKey,
+    )
 
     const formattedMessage = options.logFormat
       ? formatLog({

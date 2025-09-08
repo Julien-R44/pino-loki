@@ -176,10 +176,10 @@ test.group('Log Builder', () => {
     assert.deepEqual(JSON.parse(log.values[0][1]), {
       level: 30,
       msg: 'hello world',
-      metaKey: { foo: 'bar' },
+      metaKey: { foo: 'bar', forceToString: 200 },
     })
 
-    assert.deepEqual(log.values[0][2], { foo: 'bar' })
+    assert.deepEqual(log.values[0][2], { foo: 'bar', forceToString: '200' })
   })
 
   test('does not include structured metadata when not set', ({ assert }) => {
