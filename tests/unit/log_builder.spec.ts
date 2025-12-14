@@ -61,8 +61,14 @@ test.group('Log Builder', () => {
     assert.deepEqual(lokiLog.stream.level, 'info')
     assert.deepEqual(lokiLog.stream.hostname, 'localhost')
     assert.deepEqual(lokiLog.stream.application, 'MY-APP')
-    assert.deepEqual(lokiLog.values[0][1], JSON.stringify(log))
+
+    // hostname should be in stream labels, not in the log body
+    const { hostname: _, ...logWithoutHostname } = log
+    assert.deepEqual(lokiLog.values[0][1], JSON.stringify(logWithoutHostname))
     assert.deepEqual(+lokiLog.values[0][0], currentTime * 1_000_000)
+
+    // Original log object should NOT be mutated
+    assert.equal(log.hostname, 'localhost')
   })
 
   test('Replace timestamps', async ({ assert }) => {

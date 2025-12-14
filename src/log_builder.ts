@@ -118,21 +118,19 @@ export class LogBuilder {
     structuredMetaKey?: string
     logFormat?: LogFormat
   }): LokiLog {
+    const { hostname, ...logWithoutHostname } = options.log
+
     const status = this.statusFromLevel(options.log.level)
     const time = this.#buildTimestamp(options.log, options.replaceTimestamp)
     const propsLabels = this.#buildLabelsFromProps(options.log)
-
-    const hostname = options.log.hostname
-    options.log.hostname = undefined
-
     const structuredMetadata = this.#buildStructuredMetadata(options.log, options.structuredMetaKey)
 
     const formattedMessage = options.logFormat
       ? formatLog({
           logFormat: options.logFormat,
-          log: { ...options.log, lokilevel: status } as LogFormatExpectedObject,
+          log: { ...logWithoutHostname, lokilevel: status } as LogFormatExpectedObject,
         })
-      : this.#stringifyLog(options.log, options.convertArrays)
+      : this.#stringifyLog(logWithoutHostname, options.convertArrays)
 
     return {
       stream: {
