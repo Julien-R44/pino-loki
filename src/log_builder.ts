@@ -83,7 +83,7 @@ export class LogBuilder {
    */
   #buildStructuredMetadata(
     log: PinoLog,
-    structuredMetaKey?: string,
+    structuredMetaKey?: string | false,
   ): Record<string, string> | undefined {
     if (!structuredMetaKey) return undefined
 
@@ -115,7 +115,7 @@ export class LogBuilder {
     replaceTimestamp?: boolean
     additionalLabels?: Record<string, string>
     convertArrays?: boolean
-    structuredMetaKey?: string
+    structuredMetaKey?: string | false
     logFormat?: LogFormat
   }): LokiLog {
     const { hostname, ...logWithoutHostname } = options.log

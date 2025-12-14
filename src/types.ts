@@ -144,15 +144,13 @@ export interface LokiOptions {
 
   /**
    * Key to be used for the structured metadata.
-   * If not set, no structured metadata will be sent
+   * Set to `false` to disable structured metadata.
    *
    * See https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/
    *
-   * @default undefined
-   *
+   * @default 'meta'
    */
-  // TODO: This should be `meta` by default when major version is bumped
-  structuredMetaKey?: string
+  structuredMetaKey?: string | false
 
   /**
    * Format output of log that will be sent to Loki.

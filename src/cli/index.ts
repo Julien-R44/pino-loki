@@ -61,7 +61,7 @@ export const createPinoLokiConfigFromArgs = () => {
     replaceTimestamp: values.replaceTimestamp,
     labels: values.labels ? JSON.parse(values.labels) : undefined,
     propsToLabels: propsLabels,
-    structuredMetaKey: values.structuredMetaKey,
+    structuredMetaKey: values.structuredMetaKey === 'false' ? false : values.structuredMetaKey,
     convertArrays: values.convertArrays,
     headers: values.headers ? validateHeaders(values.headers) : undefined,
   }

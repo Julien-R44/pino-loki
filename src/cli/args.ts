@@ -72,8 +72,8 @@ export const options = {
   },
   'structuredMetaKey': {
     type: 'string',
-    default: '',
-    help: 'Key to use for structured metadata',
+    default: 'meta',
+    help: 'Key to use for structured metadata (use "false" to disable)',
   },
   'propsLabels': {
     type: 'string',

@@ -144,10 +144,18 @@ Defaults to `false`. If true, the timestamp in the pino log will be replaced wit
 
 #### `structuredMetaKey`
 
-The key in the pino log object that contains [structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/). Defaults to `undefined` which means that structured metadata will not be sent to Loki. If set to `meta` for example, `{ recordId: 123, traceId: 456 }` will be sent if using the following log : 
+The key in the pino log object that contains [structured metadata](https://grafana.com/docs/loki/latest/get-started/labels/structured-metadata/). Defaults to `'meta'`.
 
 ```ts
+// With default 'meta' key, structured metadata is automatically sent
 logger.info({ meta: { recordId: 123, traceId: 456 } }, 'Hello')
+// -> { recordId: 123, traceId: 456 } sent as structured metadata
+
+// Use a different key
+pinoLoki({ host: '...', structuredMetaKey: 'metadata' })
+
+// Disable structured metadata
+pinoLoki({ host: '...', structuredMetaKey: false })
 ```
 
 #### `convertArrays`
@@ -240,7 +248,7 @@ Options:
   -l, --labels <label>                   Additional labels to be added to all Loki logs (JSON)
   --convertArrays                        If set, arrays will be converted to objects
   --propsLabels <labels>                 Fields in log line to convert to Loki labels (comma separated)
-  --structuredMetaKey <key>              Key in the pino log object that contains structured metadata
+  --structuredMetaKey <key>              Key for structured metadata (default: 'meta', use 'false' to disable)
   -h, --help                             Print this help message and exit
 ```
 
