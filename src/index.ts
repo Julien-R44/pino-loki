@@ -28,7 +28,8 @@ function pinoLoki(userOptions: LokiOptions) {
   const options = resolveOptions(userOptions)
   const logPusher = new LogPusher(options)
 
-  debug(`[PinoLoki] initialized with options: ${JSON.stringify(options)}`)
+  const { basicAuth: _, ...safeOptions } = options
+  debug(`[PinoLoki] initialized with options: ${JSON.stringify(safeOptions)}`)
 
   let batchInterval: NodeJS.Timeout | undefined
   let pinoLogBuffer: PinoLog[] = []
