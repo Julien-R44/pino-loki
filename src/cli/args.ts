@@ -79,19 +79,6 @@ export const options = {
     type: 'string',
     help: 'Fields in log line to convert to Loki labels (comma separated values)',
   },
-  /**
-   * Kept for backwards compatibility. node:util.parseArgs does not support short options
-   * with multiple characters, and `-pl` was used with commander before
-   */
-  'pl': {
-    type: 'string',
-    help: 'Deprecated: Use --propsLabels instead. Fields in log line to convert to Loki labels (comma separated values)',
-  },
-  'no-stdout': {
-    type: 'boolean',
-    default: false,
-    help: 'Disable output to stdout',
-  },
   'headers': {
     type: 'string',
     help: 'Custom headers to be sent with the request to Loki (comma separated key=value pairs)',

@@ -40,7 +40,7 @@ export const createPinoLokiConfigFromArgs = () => {
     process.exit(0)
   }
 
-  const propsLabels = (values.propsLabels ?? values.pl ?? '')
+  const propsLabels = (values.propsLabels ?? '')
     .split(',')
     .map((label) => label.trim())
     .filter(Boolean)
