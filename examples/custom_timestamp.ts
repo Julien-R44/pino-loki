@@ -24,7 +24,7 @@ function nanoseconds() {
 
 const transport = pino.transport<LokiOptions>({
   // 👇 Replace this with "pino-loki"
-  target: '../dist/index.js',
+  target: '../dist/index.mjs',
 
   options: {
     // These labels will be added to every log

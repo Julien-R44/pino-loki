@@ -8,9 +8,12 @@ import { LokiClient } from '../helpers.ts'
 import { pinoLoki } from '../../src/index.ts'
 import type { LokiOptions } from '../../src/types.ts'
 
-const credentials = {
+const credentials: { host: string; basicAuth?: { username: string; password: string } } = {
   host: process.env.LOKI_HOST!,
-  basicAuth: { username: process.env.LOKI_USERNAME!, password: process.env.LOKI_PASSWORD! },
+  ...(process.env.LOKI_USERNAME &&
+    process.env.LOKI_PASSWORD && {
+      basicAuth: { username: process.env.LOKI_USERNAME, password: process.env.LOKI_PASSWORD },
+    }),
 }
 
 test.group('Loki integration', () => {
@@ -100,7 +103,7 @@ test.group('Loki integration', () => {
   test('batching mode should not drop logs when main process exits', async ({ assert }) => {
     const application = randomUUID()
 
-    const logger = pino.transport<LokiOptions>({
+    const transport = pino.transport<LokiOptions>({
       target: '../../dist/index.mjs',
       options: {
         ...credentials,
@@ -110,15 +113,15 @@ test.group('Loki integration', () => {
       },
     })
 
-    const pinoLogger = pino({}, logger)
+    const logger = pino({}, transport)
 
-    pinoLogger.info({ test: 1 })
-    pinoLogger.info({ test: 2 })
-    pinoLogger.info({ test: 3 })
+    logger.info({ test: 1 })
+    logger.info({ test: 2 })
+    logger.info({ test: 3 })
 
-    // Manually end the logger. This will be executed automatically
+    // Manually end the transport. This will be executed automatically
     // when the main process exits
-    logger.end()
+    transport.end()
 
     await setTimeout(1000)
 

@@ -36,10 +36,15 @@ jobs:
     strategy:
       matrix:
         node: [22.x, 24.x]
+
+    services:
+      loki:
+        image: grafana/loki:latest
+        ports:
+          - 3100:3100
+
     env:
-      LOKI_HOST: ${{ secrets.LOKI_HOST }}
-      LOKI_USERNAME: ${{ secrets.LOKI_USERNAME }}
-      LOKI_PASSWORD: ${{ secrets.LOKI_PASSWORD }}
+      LOKI_HOST: http://localhost:3100
 
     steps:
       - uses: actions/checkout@v4
@@ -58,6 +63,19 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Wait for Loki to be ready
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:3100/ready | grep -q "ready"; then
+              echo "Loki is ready"
+              exit 0
+            fi
+            echo "Waiting for Loki... ($i/30)"
+            sleep 2
+          done
+          echo "Loki failed to start"
+          exit 1
 
       - name: Test
         run: pnpm test
