@@ -182,6 +182,34 @@ test.group('Log Builder', () => {
     assert.deepEqual(log.values[0][2], { foo: 'bar' })
   })
 
+  test('structured metadata converts non-string values to strings', ({ assert }) => {
+    const logBuilder = new LogBuilder()
+
+    const log = logBuilder.build({
+      log: {
+        level: 30,
+        msg: 'hello world',
+        metaKey: {
+          string: 'bar',
+          number: 200,
+          boolean: true,
+          nested: { deep: 'value' },
+          array: [1, 2, 3],
+        },
+      },
+      replaceTimestamp: true,
+      structuredMetaKey: 'metaKey',
+    })
+
+    assert.deepEqual(log.values[0][2], {
+      string: 'bar',
+      number: '200',
+      boolean: 'true',
+      nested: '{"deep":"value"}',
+      array: '[1,2,3]',
+    })
+  })
+
   test('does not include structured metadata when not set', ({ assert }) => {
     const logBuilder = new LogBuilder()
 
