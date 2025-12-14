@@ -51,7 +51,12 @@ export const options = {
     default: '10000',
     help: 'Maximum number of logs to buffer (0 for unlimited)',
   },
-  'timeout': { type: 'string', default: '30000', short: 't', help: 'Timeout for request to Loki in ms' },
+  'timeout': {
+    type: 'string',
+    default: '30000',
+    short: 't',
+    help: 'Timeout for request to Loki in ms',
+  },
   'silenceErrors': {
     type: 'boolean',
     default: false,

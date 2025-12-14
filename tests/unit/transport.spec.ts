@@ -1,7 +1,7 @@
 import pino from 'pino'
+import { http } from 'msw'
 import { test } from '@japa/runner'
 import { setupServer } from 'msw/node'
-import { http } from 'msw'
 import { setTimeout } from 'node:timers/promises'
 
 import { pinoLoki } from '../../src/index.ts'

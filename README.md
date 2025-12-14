@@ -242,7 +242,7 @@ Options:
   -b, --batching                         Should logs be sent in batch mode (default: true)
   -i, --batching-interval <interval>     The interval at which batched logs are sent in seconds (default: 5)
   --batching-max-buffer-size <size>      Maximum number of logs to buffer (default: 10000, 0 for unlimited)
-  -t, --timeout <timeout>                Timeout for request to Loki in ms (default: 2000)
+  -t, --timeout <timeout>                Timeout for request to Loki in ms (default: 30000)
   -s, --silenceErrors                    If set, errors will not be displayed in the console
   -r, --replaceTimestamp                 Replace pino logs timestamps with Date.now()
   -l, --labels <label>                   Additional labels to be added to all Loki logs (JSON)

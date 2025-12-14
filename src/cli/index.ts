@@ -50,14 +50,15 @@ export const createPinoLokiConfigFromArgs = () => {
     endpoint: values.endpoint,
     timeout: values.timeout ? Number(values.timeout) : undefined,
     silenceErrors: values.silenceErrors,
-    batching: values.batching === false
-      ? false
-      : {
-          interval: values['batching-interval'] ? Number(values['batching-interval']) : undefined,
-          maxBufferSize: values['batching-max-buffer-size']
-            ? Number(values['batching-max-buffer-size'])
-            : undefined,
-        },
+    batching:
+      values.batching === false
+        ? false
+        : {
+            interval: values['batching-interval'] ? Number(values['batching-interval']) : undefined,
+            maxBufferSize: values['batching-max-buffer-size']
+              ? Number(values['batching-max-buffer-size'])
+              : undefined,
+          },
     replaceTimestamp: values.replaceTimestamp,
     labels: values.labels ? JSON.parse(values.labels) : undefined,
     propsToLabels: propsLabels,

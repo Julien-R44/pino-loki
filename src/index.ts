@@ -34,7 +34,8 @@ function resolveOptions(options: LokiOptions) {
     replaceTimestamp: options.replaceTimestamp ?? false,
     propsToLabels: options.propsToLabels ?? [],
     convertArrays: options.convertArrays ?? false,
-    structuredMetaKey: options.structuredMetaKey === false ? undefined : (options.structuredMetaKey ?? 'meta'),
+    structuredMetaKey:
+      options.structuredMetaKey === false ? undefined : (options.structuredMetaKey ?? 'meta'),
     logFormat: options.logFormat,
   }
 }
