@@ -1,4 +1,4 @@
-import { pino } from 'pino'
+import pino from 'pino'
 import { join } from 'node:path'
 import { test } from '@japa/runner'
 import { randomUUID } from 'node:crypto'
@@ -101,7 +101,7 @@ test.group('Loki integration', () => {
     const application = randomUUID()
 
     const logger = pino.transport<LokiOptions>({
-      target: '../../dist/index.js',
+      target: '../../dist/index.mjs',
       options: {
         ...credentials,
         batching: true,
@@ -160,7 +160,7 @@ test.group('Loki integration', () => {
     const application = randomUUID()
 
     const transport = pino.transport<LokiOptions>({
-      target: '../../dist/index.js',
+      target: '../../dist/index.mjs',
       options: {
         ...credentials,
         batching: false,

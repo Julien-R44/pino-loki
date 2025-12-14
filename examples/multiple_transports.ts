@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { pino } from 'pino'
+import pino from 'pino'
 
 const transport = pino.transport({
   targets: [

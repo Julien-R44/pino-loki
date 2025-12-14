@@ -4,7 +4,7 @@
 
 import 'dotenv/config'
 
-import { pino } from 'pino'
+import pino from 'pino'
 
 import type { LokiOptions } from '../src/types.ts'
 
