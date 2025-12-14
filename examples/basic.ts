@@ -1,6 +1,6 @@
 import 'dotenv/config'
 
-import { pino } from 'pino'
+import pino from 'pino'
 
 import { LokiLogLevel } from '../src/constants.ts'
 import type { LokiOptions } from '../src/types.ts'
