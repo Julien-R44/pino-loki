@@ -20,9 +20,6 @@ import type { LokiOptions } from 'pino-loki'
 const transport = pino.transport<LokiOptions>({
   target: "pino-loki",
   options: {
-    batching: true,
-    interval: 5,
-
     host: 'https://my-loki-instance:3100',
     basicAuth: {
       username: "username",
@@ -102,11 +99,44 @@ If false, errors when sending logs to Loki will be displayed in the console. Def
 
 #### `batching`
 
-Should logs be sent in batch mode. Defaults to `true`.
+Batching configuration. When enabled, logs are accumulated in a buffer and sent to Loki at regular intervals, reducing the number of HTTP requests. Batching is **enabled by default**.
 
-#### `interval`
+```ts
+// Batching enabled with default options (interval: 5s, maxBufferSize: 10000)
+pinoLoki({ host: '...' })
 
-The interval at which batched logs are sent in seconds. Defaults to `5`.
+// Batching with custom options
+pinoLoki({
+  host: '...',
+  batching: {
+    interval: 2,        // Send logs every 2 seconds
+    maxBufferSize: 5000 // Keep max 5000 logs in buffer
+  }
+})
+
+// Batching disabled - logs sent immediately
+pinoLoki({ host: '...', batching: false })
+```
+
+##### `batching.interval`
+
+The interval at which batched logs are sent, in seconds. Defaults to `5`.
+
+##### `batching.maxBufferSize`
+
+Maximum number of logs to keep in the buffer. When the buffer is full, **oldest logs are dropped** (FIFO) to make room for new ones. Defaults to `10000`.
+
+This prevents memory issues (OOM) if Loki becomes unavailable - without this limit, the buffer would grow indefinitely. Set to `0` for unlimited buffer (probably not really recommended).
+
+```ts
+pinoLoki({
+  host: '...',
+  batching: {
+    interval: 10,
+    maxBufferSize: 50000
+  }
+})
+```
 
 #### `replaceTimestamp` 
 
@@ -195,23 +225,23 @@ node foo | pino-loki --hostname=http://hostname:3100
 ```
 $ pino-loki -h
 Options:
-  -V, --version                  output the version number
-  -u, --user <user>              Loki username
-  -p, --password <password>      Loki password
-  --hostname <hostname>          URL for Loki
-  --endpoint <endpoint>          Path to the Loki push API
-  --headers <headers>            Headers to be sent to Loki (Example: "X-Scope-OrgID=your-id,another-header=another-value")
-  -b, --batch                    Should logs be sent in batch mode
-  -i, --interval <interval>      The interval at which batched logs are sent in seconds
-  -t, --timeout <timeout>        Timeout for request to Loki
-  -s, --silenceErrors            If false, errors will be displayed in the console
-  -r, --replaceTimestamp         Replace pino logs timestamps with Date.now()
-  -l, --labels <label>           Additional labels to be added to all Loki logs
-  -a, --convertArrays            If true, arrays will be converted to objects
-  -pl, --propsLabels <labels>    Fields in log line to convert to Loki labels (comma separated values)
-  --structuredMetaKey <key>      Key in the pino log object that contains structured metadata
-  --no-stdout                    Disable output to stdout
-  -h, --help                     display help for command
+  -v, --version                          Print version number and exit
+  -u, --user <user>                      Loki username
+  -p, --password <password>              Loki password
+  --hostname <hostname>                  URL for Loki (default: http://localhost:3100)
+  --endpoint <endpoint>                  Path to the Loki push API (default: /loki/api/v1/push)
+  --headers <headers>                    Headers to be sent to Loki (Example: "X-Scope-OrgID=your-id,another=value")
+  -b, --batching                         Should logs be sent in batch mode (default: true)
+  -i, --batching-interval <interval>     The interval at which batched logs are sent in seconds (default: 5)
+  --batching-max-buffer-size <size>      Maximum number of logs to buffer (default: 10000, 0 for unlimited)
+  -t, --timeout <timeout>                Timeout for request to Loki in ms (default: 2000)
+  -s, --silenceErrors                    If set, errors will not be displayed in the console
+  -r, --replaceTimestamp                 Replace pino logs timestamps with Date.now()
+  -l, --labels <label>                   Additional labels to be added to all Loki logs (JSON)
+  --convertArrays                        If set, arrays will be converted to objects
+  --propsLabels <labels>                 Fields in log line to convert to Loki labels (comma separated)
+  --structuredMetaKey <key>              Key in the pino log object that contains structured metadata
+  -h, --help                             Print this help message and exit
 ```
 
 ## Examples
@@ -270,7 +300,13 @@ And you should be good to go! You can check our [full example](./examples/adonis
 Out-of-order Loki errors can occur due to the asynchronous nature of Pino. The fix to this is to allow for out-of-order logs in the Loki configuration. The reason why Loki doesn't have this enabled by default is because Promtail accounts for ordering constraints, however the same issue can also happen with promtail in high-load or when working with distributed networks.
 
 ## Dropped logs
-If any network issues occur, the logs can be dropped. The recommendation is therefore to implement a failover solution, this will vary greatly from system to system.
+
+Logs can be dropped in two scenarios:
+
+1. **Network issues**: If Loki is unreachable, logs in the current batch will be lost.
+2. **Buffer overflow**: When batching is enabled and the buffer reaches `maxBufferSize` (default: 10,000), the oldest logs are dropped to make room for new ones. This prevents memory exhaustion if Loki becomes unavailable for an extended period.
+
+For critical applications, consider implementing a failover solution or adjusting `maxBufferSize` based on your memory constraints and acceptable data loss.
 
 ## Node v18+ Required
 As the pino-loki library uses the native Node fetch, any consumer must be using a version of Node greater than v18.0.0.

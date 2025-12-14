@@ -3,7 +3,23 @@ import abstractTransportBuild from 'pino-abstract-transport'
 import debug from './debug.ts'
 import { LogPusher } from './log_pusher.ts'
 import { LokiLogLevel } from './constants.ts'
-import type { PinoLog, LokiOptions } from './types.ts'
+import type { PinoLog, LokiOptions, BatchingOptions } from './types.ts'
+
+interface ResolvedBatching {
+  enabled: boolean
+  interval: number
+  maxBufferSize: number
+}
+
+function resolveBatching(batching: LokiOptions['batching']): ResolvedBatching {
+  if (batching === false) return { enabled: false, interval: 5, maxBufferSize: 10_000 }
+
+  return {
+    enabled: true,
+    interval: batching?.interval ?? 5,
+    maxBufferSize: batching?.maxBufferSize ?? 10_000,
+  }
+}
 
 /**
  * Resolves the options for the Pino Loki transport
@@ -14,8 +30,7 @@ function resolveOptions(options: LokiOptions) {
     endpoint: options.endpoint ?? 'loki/api/v1/push',
     timeout: options.timeout ?? 30_000,
     silenceErrors: options.silenceErrors ?? false,
-    batching: options.batching ?? true,
-    interval: options.interval ?? 5,
+    batching: resolveBatching(options.batching),
     replaceTimestamp: options.replaceTimestamp ?? false,
     propsToLabels: options.propsToLabels ?? [],
     convertArrays: options.convertArrays ?? false,
@@ -36,21 +51,23 @@ function pinoLoki(userOptions: LokiOptions) {
 
   return abstractTransportBuild(
     async (source) => {
-      if (options.batching) {
+      if (options.batching.enabled) {
         batchInterval = setInterval(async () => {
           debug(`Batch interval reached, sending ${pinoLogBuffer.length} logs to Loki`)
 
-          if (pinoLogBuffer.length === 0) {
-            return
-          }
+          if (pinoLogBuffer.length === 0) return
 
           logPusher.push(pinoLogBuffer)
           pinoLogBuffer = []
-        }, options.interval! * 1000)
+        }, options.batching.interval * 1000)
       }
 
       for await (const obj of source) {
-        if (options.batching) {
+        if (options.batching.enabled) {
+          if (options.batching.maxBufferSize > 0 && pinoLogBuffer.length >= options.batching.maxBufferSize) {
+            const dropped = pinoLogBuffer.shift()
+            debug(`[PinoLoki] Buffer full, dropping oldest log: ${JSON.stringify(dropped)}`)
+          }
           pinoLogBuffer.push(obj)
           continue
         }
@@ -64,7 +81,7 @@ function pinoLoki(userOptions: LokiOptions) {
        * and clear the interval
        */
       async close() {
-        if (options.batching) {
+        if (options.batching.enabled) {
           clearInterval(batchInterval!)
           await logPusher.push(pinoLogBuffer)
         }
@@ -74,4 +91,4 @@ function pinoLoki(userOptions: LokiOptions) {
 }
 
 export default pinoLoki
-export { LokiLogLevel, pinoLoki, type LokiOptions, type PinoLog }
+export { LokiLogLevel, pinoLoki, type LokiOptions, type PinoLog, type BatchingOptions }

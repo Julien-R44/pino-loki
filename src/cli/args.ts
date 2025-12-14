@@ -34,17 +34,22 @@ export const options = {
     default: '/loki/api/v1/push',
     help: 'Path to the Loki push API',
   },
-  'batch': {
+  'batching': {
     type: 'boolean',
     default: true,
     short: 'b',
     help: 'Should logs be sent in batch mode',
   },
-  'interval': {
+  'batching-interval': {
     type: 'string',
     default: '5',
     short: 'i',
     help: 'The interval at which batched logs are sent in seconds',
+  },
+  'batching-max-buffer-size': {
+    type: 'string',
+    default: '10000',
+    help: 'Maximum number of logs to buffer (0 for unlimited)',
   },
   'timeout': { type: 'string', default: '2000', short: 't', help: 'Timeout for request to Loki' },
   'silenceErrors': {

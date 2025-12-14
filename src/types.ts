@@ -29,6 +29,26 @@ export interface PinoLog {
 }
 
 /**
+ * Batching configuration options
+ */
+export interface BatchingOptions {
+  /**
+   * The interval at which batched logs are sent in seconds
+   *
+   * @default 5
+   */
+  interval?: number
+
+  /**
+   * Maximum number of logs to buffer before dropping the oldest ones.
+   * Set to 0 for unlimited buffer (not recommended).
+   *
+   * @default 10_000
+   */
+  maxBufferSize?: number
+}
+
+/**
  * Options for the Pino-Loki transport
  */
 export interface LokiOptions {
@@ -59,18 +79,11 @@ export interface LokiOptions {
   silenceErrors?: boolean
 
   /**
-   * Should logs be sent in batch mode
+   * Batching configuration. Set to `false` to disable batching entirely.
    *
-   * @default true
+   * @default { enabled: true, interval: 5, maxBufferSize: 10_000 }
    */
-  batching?: boolean
-
-  /**
-   * The interval at which batched logs are sent in seconds
-   *
-   * @default 5
-   */
-  interval?: number
+  batching?: false | BatchingOptions
 
   /**
    * Replace pino logs timestamps with Date.now()

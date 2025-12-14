@@ -80,8 +80,7 @@ test.group('Loki integration', () => {
       { level: 'info' },
       pinoLoki({
         ...credentials,
-        batching: true,
-        interval: 1,
+        batching: { interval: 1 },
         labels: { application },
       }),
     )
@@ -107,8 +106,7 @@ test.group('Loki integration', () => {
       target: '../../dist/index.mjs',
       options: {
         ...credentials,
-        batching: true,
-        interval: 10,
+        batching: { interval: 10 },
         labels: { application },
       },
     })

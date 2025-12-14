@@ -13,8 +13,7 @@ const transport = pino.transport<LokiOptions>({
   target: '../dist/index.mjs',
 
   options: {
-    batching: true,
-    interval: 2,
+    batching: { interval: 2 },
 
     // These labels will be added to every log
     labels: { application: 'MY-APP' },
