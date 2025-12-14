@@ -308,8 +308,8 @@ Logs can be dropped in two scenarios:
 
 For critical applications, consider implementing a failover solution or adjusting `maxBufferSize` based on your memory constraints and acceptable data loss.
 
-## Node v18+ Required
-As the pino-loki library uses the native Node fetch, any consumer must be using a version of Node greater than v18.0.0.
+## Node v20+ Required
+As the pino-loki library uses the native Node fetch, any consumer must be using a version of Node greater than v20.0.0.
 
 ## Developing
 
