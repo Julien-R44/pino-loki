@@ -48,23 +48,30 @@ function pinoLoki(userOptions: LokiOptions) {
 
   let batchInterval: NodeJS.Timeout | undefined
   let pinoLogBuffer: PinoLog[] = []
+  let isClosed = false
 
   return abstractTransportBuild(
     async (source) => {
       if (options.batching.enabled) {
-        batchInterval = setInterval(async () => {
+        batchInterval = setInterval(() => {
+          if (isClosed) return
+
           debug(`Batch interval reached, sending ${pinoLogBuffer.length} logs to Loki`)
 
           if (pinoLogBuffer.length === 0) return
 
-          logPusher.push(pinoLogBuffer)
+          const logsToSend = pinoLogBuffer
           pinoLogBuffer = []
+          logPusher.push(logsToSend)
         }, options.batching.interval * 1000)
       }
 
       for await (const obj of source) {
         if (options.batching.enabled) {
-          if (options.batching.maxBufferSize > 0 && pinoLogBuffer.length >= options.batching.maxBufferSize) {
+          if (
+            options.batching.maxBufferSize > 0 &&
+            pinoLogBuffer.length >= options.batching.maxBufferSize
+          ) {
             const dropped = pinoLogBuffer.shift()
             debug(`[PinoLoki] Buffer full, dropping oldest log: ${JSON.stringify(dropped)}`)
           }
@@ -82,8 +89,12 @@ function pinoLoki(userOptions: LokiOptions) {
        */
       async close() {
         if (options.batching.enabled) {
+          isClosed = true
           clearInterval(batchInterval!)
-          await logPusher.push(pinoLogBuffer)
+
+          if (pinoLogBuffer.length > 0) {
+            await logPusher.push(pinoLogBuffer)
+          }
         }
       },
     },
