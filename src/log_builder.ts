@@ -78,13 +78,25 @@ export class LogBuilder {
     return labels
   }
 
-  #createStructuredMetadata(log: PinoLog, structuredMetaKey?: string): Record<string, any> | undefined {
+  /**
+   * Loki structured metadata requires string values only.
+   */
+  #buildStructuredMetadata(
+    log: PinoLog,
+    structuredMetaKey?: string,
+  ): Record<string, string> | undefined {
     if (!structuredMetaKey) return undefined
 
+    const meta = log[structuredMetaKey]
+    if (!meta || typeof meta !== 'object') return undefined
+
     const result: Record<string, string> = {}
-    for (const [key, value] of Object.entries(log[structuredMetaKey])) {
-      result[key] = typeof value === 'string' ? value : String(value)
+    for (const [key, value] of Object.entries(meta)) {
+      if (typeof value === 'string') result[key] = value
+      else if (typeof value === 'object' && value !== null) result[key] = JSON.stringify(value)
+      else result[key] = String(value)
     }
+
     return result
   }
 
@@ -113,10 +125,7 @@ export class LogBuilder {
     const hostname = options.log.hostname
     options.log.hostname = undefined
 
-    const structuredMetadata = this.#createStructuredMetadata(
-      options.log,
-      options.structuredMetaKey,
-    )
+    const structuredMetadata = this.#buildStructuredMetadata(options.log, options.structuredMetaKey)
 
     const formattedMessage = options.logFormat
       ? formatLog({
