@@ -44,7 +44,23 @@ Additional labels to be added to all Loki logs. This can be used to add addition
 
 #### `propsToLabels`
 
-A list of properties to be converted to loki labels. 
+A list of properties to be converted to Loki labels.
+
+Supports dot-separated and array access paths:
+
+```ts
+pinoLoki({
+  propsToLabels: ['foo', 'bar.baz', ['a', 'b', 'c']],
+})
+```
+
+Generated labels will use `_` as a separator:
+
+- `foo`
+- `bar_baz`
+- `a_b_c`
+
+All non-string values will be converted to string (for primitives) or JSON stringified.
 
 #### `levelMap`
 

@@ -1,3 +1,5 @@
+import { get } from 'es-toolkit/compat'
+
 import { LokiLogLevel } from './constants.ts'
 import { formatLog } from './format_mesage.ts'
 import type { LokiLog, PinoLog, LokiOptions, LogFormat, LogFormatExpectedObject } from './types.ts'
@@ -10,7 +12,7 @@ type BuilderOptions = Pick<LokiOptions, 'propsToLabels' | 'levelMap'>
  * Converts a Pino log to a Loki log
  */
 export class LogBuilder {
-  #propsToLabels: string[]
+  #propsToLabels: Array<string | string[]>
   #levelMap: { [key: number]: LokiLogLevel }
 
   constructor(options?: BuilderOptions) {
@@ -66,12 +68,26 @@ export class LogBuilder {
     })
   }
 
+  #stringifyValue(value: unknown) {
+    if (typeof value === 'string') {
+      return value
+    }
+
+    if (typeof value === 'object' && value !== null) {
+      return JSON.stringify(value)
+    }
+
+    return String(value)
+  }
+
   #buildLabelsFromProps(log: PinoLog) {
     const labels: Record<string, string> = {}
 
     for (const prop of this.#propsToLabels) {
-      if (log[prop]) {
-        labels[prop] = log[prop]
+      const value = get(log, prop)
+      const labelKey = Array.isArray(prop) ? prop.join('_') : prop.replaceAll('.', '_')
+      if (value) {
+        labels[labelKey] = this.#stringifyValue(value)
       }
     }
 
@@ -92,9 +108,7 @@ export class LogBuilder {
 
     const result: Record<string, string> = {}
     for (const [key, value] of Object.entries(meta)) {
-      if (typeof value === 'string') result[key] = value
-      else if (typeof value === 'object' && value !== null) result[key] = JSON.stringify(value)
-      else result[key] = String(value)
+      result[key] = this.#stringifyValue(value)
     }
 
     return result

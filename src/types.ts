@@ -131,9 +131,12 @@ export interface LokiOptions {
   headers?: Record<string, string>
 
   /**
-   * Select log message's props to set as Loki labels
+   * Select log message's props to set as Loki labels.
+   *
+   * Supports dot-separated and array access paths: `a.b.c` and `['a', 'b', 'c']`.
+   * Resulting label will use `_` as a separator: `a_b_c`.
    */
-  propsToLabels?: string[]
+  propsToLabels?: Array<string | string[]>
 
   /**
    * Convert arrays in log messages to objects with index as key

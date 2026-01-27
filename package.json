@@ -58,6 +58,7 @@
     "checks": "pnpm typecheck && pnpm lint && pnpm test"
   },
   "dependencies": {
+    "es-toolkit": "^1.44.0",
     "pino-abstract-transport": "^3.0.0",
     "pump": "^3.0.3"
   },

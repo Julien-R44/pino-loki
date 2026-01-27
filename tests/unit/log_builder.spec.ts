@@ -95,7 +95,9 @@ test.group('Log Builder', () => {
   })
 
   test('Props to label', ({ assert }) => {
-    const logBuilder = new LogBuilder({ propsToLabels: ['appId', 'buildId'] })
+    const logBuilder = new LogBuilder({
+      propsToLabels: ['appId', 'buildId', 'foo.value', 'foo.baz.value', ['foo', 'baz', 'bar']],
+    })
 
     const log: PinoLog = {
       hostname: 'localhost',
@@ -105,6 +107,13 @@ test.group('Log Builder', () => {
       v: 1,
       appId: 123,
       buildId: 'aaaa',
+      foo: {
+        value: 'foo',
+        baz: {
+          value: 'baz',
+          bar: { value: 'bar' },
+        },
+      },
     }
     const lokiLog = logBuilder.build({
       log,
@@ -113,6 +122,9 @@ test.group('Log Builder', () => {
     })
     assert.equal(lokiLog.stream.appId, 123)
     assert.equal(lokiLog.stream.buildId, 'aaaa')
+    assert.equal(lokiLog.stream.foo_value, 'foo')
+    assert.equal(lokiLog.stream.foo_baz_value, 'baz')
+    assert.equal(lokiLog.stream.foo_baz_bar, JSON.stringify({ value: 'bar' }))
   })
 
   test('should not modify nanoseconds timestamps', ({ assert }) => {
