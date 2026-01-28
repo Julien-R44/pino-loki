@@ -1,6 +1,7 @@
 import debug from './debug.ts'
 import { LogBuilder } from './log_builder.ts'
 import type { PinoLog, LokiOptions } from './types.ts'
+import { Dispatcher, EnvHttpProxyAgent } from "undici";
 
 class RequestError extends Error {
   responseBody: string
@@ -18,9 +19,11 @@ class RequestError extends Error {
 export class LogPusher {
   #options: LokiOptions
   #logBuilder: LogBuilder
+  #agent: Dispatcher
 
   constructor(options: LokiOptions) {
     this.#options = options
+    this.#agent = new EnvHttpProxyAgent() // for automatic HTTP-proxy support
 
     this.#logBuilder = new LogBuilder({
       levelMap: options.levelMap,
@@ -83,6 +86,7 @@ export class LogPusher {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ streams: lokiLogs }),
+          dispatcher: this.#agent,
         },
       )
 
