@@ -105,7 +105,7 @@ export interface LokiOptions {
   /**
    * Custom pino to loki log level mapping, merged with the default one.
    * @default
-   *    10: LokiLogLevel.Debug,
+   *    10: LokiLogLevel.Trace,
         20: LokiLogLevel.Debug,
         30: LokiLogLevel.Info,
         40: LokiLogLevel.Warning,

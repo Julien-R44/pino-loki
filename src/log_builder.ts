@@ -17,7 +17,7 @@ export class LogBuilder {
     this.#propsToLabels = options?.propsToLabels || []
     this.#levelMap = Object.assign(
       {
-        10: LokiLogLevel.Debug,
+        10: LokiLogLevel.Trace,
         20: LokiLogLevel.Debug,
         30: LokiLogLevel.Info,
         40: LokiLogLevel.Warning,
