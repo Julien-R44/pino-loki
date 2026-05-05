@@ -52,7 +52,7 @@ A map of pino log levels to Loki log levels. This can be used to map pino log le
 
 ```ts
 {
-  10: LokiLogLevel.Debug,
+  10: LokiLogLevel.Trace,
   20: LokiLogLevel.Debug,
   30: LokiLogLevel.Info,
   40: LokiLogLevel.Warning,
